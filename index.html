@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assignment 01 &#8209; HTML CSS</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Marcellus&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hotel-datepicker@4.12.2/dist/css/hotel-datepicker.css" />
+</head>
+
+<body>
+  <header class="site-header">
+    <nav class="site-header-inner container" aria-label="navigation bar">
+      <div class="site-header-item">
+        <button type="button" class="header-btn circle" aria-label="More options">
+          <i class="fa-solid fa-ellipsis"></i>
+        </button>
+        <a href="#" class="white-text">Destination</a>
+        <a href="#" class="white-text">Groups &amp; Weddings</a>
+      </div>
+
+      <div class="site-header-item">
+        <img class="site-header-item__logo" src="assets/logo.png" alt="logo">
+      </div>
+
+      <div class="site-header-item">
+        <a href="tel:+18889999999" class="site-header-item__phone header-btn">
+          <i class="fa-solid fa-phone"></i>
+          <span class="header-text">+1&nbsp;(888)&nbsp;999&#8209;9999</span>
+        </a>
+        <div class="light-divider"></div>
+        <button type="button" class="header-btn" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <!-- Breadcrumbs -->
+      <div class="header-breadcrumb">
+        <span>Dominican Republic</span>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span>La Altagracia Province</span>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span>Bayahibe</span>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span>Bayahibe Hotels</span>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span>Sanctuary Cap Cana</span>
+      </div>
+
+      <!-- Title -->
+      <div class="main-title">
+        <h1>
+          Sanctuary Cap Cana - Luxury Collection Adult All-Inclusive Resort
+        </h1>
+      </div>
+
+      <!-- Rating & Details -->
+      <div class="rating">
+        <div class="rating__stars">
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+        </div>
+        <div class="divider"></div>
+        <div class="rating__reviews">
+          <i class="fa-regular fa-thumbs-up"></i>
+          <span><strong>9.0</strong> (3 reviews)</span>
+        </div>
+        <div class="divider"></div>
+        <div class="rating__bedrooms">
+          <i class="fa-solid fa-bed"></i>
+          <span>8 Bedrooms</span>
+        </div>
+        <div class="divider"></div>
+        <div class="rating__bathrooms">
+          <i class="fa-solid fa-bath"></i>
+          <span>8 Bathrooms</span>
+        </div>
+        <div class="divider"></div>
+        <div class="rating__guests">
+          <i class="fa-solid fa-people-group"></i>
+          <span>14 Guests</span>
+        </div>
+      </div>
+
+      <div class="main-layout">
+        <!-- Left Content -->
+        <div>
+          <section class="hero" aria-label="Resort photo gallery">
+            <div class="hero__gallery">
+              <div class="hero__gallery-main">
+                <img
+                  src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+                  alt="Resort main view" class="hero__img">
+                <span class="hero__badge">
+                  <i class="fa-solid fa-camera"></i> View all images (180)
+                </span>
+              </div>
+              <div class="hero__gallery-grid">
+                <img
+                  src="https://images.unsplash.com/photo-1540541338287-41700207dee6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                  alt="Resort pool" class="hero__img">
+                <img
+                  src="https://images.unsplash.com/photo-1618140052121-39fc6db33972?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                  alt="Luxury room" class="hero__img">
+                <img
+                  src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                  alt="Bed view" class="hero__img">
+                <img
+                  src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                  alt="Lounge area" class="hero__img">
+              </div>
+            </div>
+          </section>
+
+          <!-- Page Navigation -->
+          <nav class="page-nav" aria-label="Page navigation">
+            <ul class="page-nav__list">
+              <li><a href="#about" class="page-nav__link">About</a></li>
+              <li>
+                <a href="#highlights" class="page-nav__link">Resort Highlights</a>
+              </li>
+              <li>
+                <a href="#amenities" class="page-nav__link">All-Inclusive Amenities</a>
+              </li>
+              <li>
+                <a href="#activities" class="page-nav__link">Activities</a>
+              </li>
+              <li><a href="#reviews" class="page-nav__link">Reviews</a></li>
+              <li><a href="#policies" class="page-nav__link">Policies</a></li>
+              <li><a href="#faqs" class="page-nav__link">FAQs</a></li>
+              <li><a href="#location" class="page-nav__link">Location</a></li>
+            </ul>
+          </nav>
+
+          <!-- About Section -->
+          <section id="about" class="content-card">
+            <h2 class="content-card__header">About</h2>
+            <hr class="content-card__divider">
+
+            <div class="about-grid">
+              <!-- Left Text Column -->
+              <div class="about-text expandable-section">
+                <div class="expandable-content">
+                  <p>
+                    Rediscover Sanctuary Cap Cana, the Dominican Republic's most
+                    exclusive adults-only all-inclusive resort.
+                  </p>
+
+                  <p>
+                    You'll be delighted by the resort's $45 million modernization
+                    as you explore spectacular suites, artfully crafted lobbies,
+                    updated restaurants and bars, enhanced world-class spa and
+                    state-of-the-art fitness center. Sanctuary Cap Cana, A
+                    Luxury Collection Adult All-Inclusive Resort is located in
+                    Cap Cana, a private gated community retreat inside Punta
+                    Cana. Cap Cana is made up of 30,000 acres of flawless
+                    beaches...
+                  </p>
+
+                  <div class="expandable-extra">
+                    <p>
+                      The resort offers a refined adults-only escape with spacious
+                      suites, ocean views, elevated dining, premium bars, relaxing
+                      pools, and peaceful areas designed for privacy and comfort.
+                      Guests can enjoy a complete all-inclusive experience with
+                      access to restaurants, entertainment, wellness facilities,
+                      beach areas, and personalized service throughout their stay.
+                    </p>
+
+                    <p>
+                      Whether you are planning a romantic getaway, a luxury beach
+                      vacation, or a relaxing all-inclusive stay, Sanctuary Cap Cana
+                      provides a calm and elegant setting close to Punta Cana's
+                      airport, marina, golf, and coastline.
+                    </p>
+                  </div>
+                </div>
+
+                <button type="button" class="link-show-more expandable-toggle" aria-expanded="false">
+                  Show more
+                </button>
+              </div>
+
+              <!-- Right Amenities Column -->
+              <div class="about-amenities">
+                <h3 class="amenities-title">Room-Specific Amenities</h3>
+                <ul class="amenities-list">
+                  <li class="amenities-item">
+                    <i class="fa-solid fa-bath"></i> Soaking Tubs
+                  </li>
+                  <li class="amenities-item">
+                    <i class="fa-solid fa-wine-bottle"></i> In-room bar with
+                    premium liquors
+                  </li>
+                  <li class="amenities-item">
+                    <i class="fa-solid fa-water-ladder"></i> Swim-up pool
+                  </li>
+                  <li class="amenities-item">
+                    <i class="fa-solid fa-mug-hot"></i> Coffee lounge
+                  </li>
+                  <li class="amenities-item">
+                    <i class="fa-solid fa-bell-concierge"></i> In-room dining
+                  </li>
+                  <li class="amenities-item">
+                    <i class="fa-solid fa-spa"></i> In-Room Spa Services
+                  </li>
+                  <li class="amenities-item">
+                    <i class="fa-solid fa-bell"></i> Butler Service
+                  </li>
+                  <li class="amenities-item">
+                    <i class="fa-solid fa-dumbbell"></i> Personal Fitness
+                    Equipment
+                  </li>
+                  <li class="amenities-item">
+                    <i class="fa-solid fa-car"></i> Private BMW transfer
+                  </li>
+                </ul>
+                <button type="button" class="link-show-more">Show more</button>
+              </div>
+            </div>
+
+            <!-- Adults Only Banner -->
+            <div class="adults-banner">
+              <div class="adults-icon">
+                <img src="assets/icons/18.png" alt="18+">
+              </div>
+              <div class="adults-content">
+                <h4>An Adults-exclusive property</h4>
+                <p>
+                  Sanctuary Cap Cana: An exclusive, all-inclusive haven
+                  designed for adults seeking unparalleled luxury and
+                  tranquility.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Resort Highlights Section -->
+          <section id="highlights" class="content-card">
+            <h2 class="content-card__header  ">Resort Highlights</h2>
+            <p class="content-card__subtitle">
+              Condimentum cursus commodo lorema non mi turpis semper dictum
+            </p>
+
+            <!-- Featured Highlight -->
+            <div class="featured-highlight-outer">
+              <div class="featured-highlight">
+                <img src="https://images.unsplash.com/photo-1742844552700-3926862c5311?q=80&w=800&auto=format&fit=crop"
+                  alt="Resort Lounge" class="featured-highlight__img">
+                <div class="featured-highlight__content">
+                  <h3 class="featured-highlight__title">
+                    Augue euismod diam facilisis sit at et faucibus scelerisque.
+                  </h3>
+                  <p class="featured-highlight__text">
+                    Et felis donec pretium molestie vestibulum. Venenatis
+                    sagittis porttitor fringilla id non quis. Nunc dui facilisi
+                    viverra integer vulputate tempus. Morbi a urna id nulla
+                    dignissim. A vestibulum egestas dignissim ut platea maecenas
+                    senectus morbi volutpat.<br><br>Velit ac ac elit egestas
+                    nullam tristique bibendum. Pharetra laoreet magna pretium
+                    elit nibh ipsum lectus pellentesque. Aliquam risus pharetra
+                    in vitae tellus urna. A tortor netus lectus.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Highlights Grid/Carousel -->
+            <div class="highlights-carousel">
+              <button type="button" class="carousel-nav prev" aria-label="Previous">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+
+              <div class="highlights-grid">
+                <!-- Card 1 -->
+                <div class="highlight-card">
+                  <img
+                    src="https://images.unsplash.com/photo-1582610116397-edb318620f90?auto=format&fit=crop&w=600&q=80"
+                    alt="Pool" class="highlight-card__img">
+                  <div class="highlight-card__content">
+                    <h4 class="highlight-card__title">
+                      Gacam egestas tortor cursus ultrices nulla lorem diam
+                    </h4>
+                    <p class="highlight-card__text">
+                      A a ipsum fusce praesent fusce gravida eu nulla.
+                      Venenatis viverra condimentum cursus commodo lorem.
+                      Augue euismod diam facilisis sit at et faucibus
+                      scelerisque.
+                    </p>
+                  </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="highlight-card">
+                  <img
+                    src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=600&q=80"
+                    alt="Bar" class="highlight-card__img">
+                  <div class="highlight-card__content">
+                    <h4 class="highlight-card__title">
+                      Gacam egestas tortor cursus ultrices nulla lorem diam
+                    </h4>
+                    <p class="highlight-card__text">
+                      A a ipsum fusce praesent fusce gravida eu nulla.
+                      Venenatis viverra condimentum cursus commodo lorem.
+                      Augue euismod diam facilisis sit at et faucibus
+                      scelerisque.
+                    </p>
+                  </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="highlight-card">
+                  <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=600&q=80"
+                    alt="Spa" class="highlight-card__img">
+                  <div class="highlight-card__content">
+                    <h4 class="highlight-card__title">
+                      Gacam egestas tortor cursus ultrices nulla lorem diam
+                    </h4>
+                    <p class="highlight-card__text">
+                      A a ipsum fusce praesent fusce gravida eu nulla.
+                      Venenatis viverra condimentum cursus commodo lorem.
+                      Augue euismod diam facilisis sit at et faucibus
+                      scelerisque.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <button type="button" class="carousel-nav next" aria-label="Next">
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- All-Inclusive Amenities Section -->
+          <section id="amenities" class="content-card">
+            <h2 class="content-card__header  ">
+              All-Inclusive Amenities
+            </h2>
+            <p class="content-card__subtitle">
+              What's Included In Your Stay At Sanctuary Cap Cana
+            </p>
+            <hr class="content-card__divider">
+
+            <div class="amenities-category-grid">
+              <!-- Category 1 -->
+              <div>
+                <h3 class="amenities-category-title">Eat &amp; Drink</h3>
+                <ul class="amenities-bullet-list">
+                  <li class="amenities-bullet-item">
+                    Unlimited fine dining at 12 restaurants
+                  </li>
+                  <li class="amenities-bullet-item">
+                    Breakfast, lunch, dinner and anytime snacks
+                  </li>
+                  <li class="amenities-bullet-item">
+                    Unlimited premium liquors
+                  </li>
+                  <li class="amenities-bullet-item">
+                    6 bars, including swim-up and overwater bar
+                  </li>
+                  <li class="amenities-bullet-item">
+                    Stocked bar in every hotel room
+                  </li>
+                  <li class="amenities-bullet-item">
+                    Unlimited Robert Mondavi twin oaks wines
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Category 2 -->
+              <div>
+                <h3 class="amenities-category-title">Relax &amp; Play</h3>
+                <ul class="amenities-bullet-list">
+                  <li class="amenities-bullet-item">
+                    PADI-Certified SCUBA diving and equipment
+                  </li>
+                  <li class="amenities-bullet-item">7 pools, 3 whirlpools</li>
+                  <li class="amenities-bullet-item">
+                    Waterskiing and wakeboarding
+                  </li>
+                  <li class="amenities-bullet-item">
+                    Hobie cats, paddleboards, kayaks
+                  </li>
+                  <li class="amenities-bullet-item">
+                    Snorkeling and equipment
+                  </li>
+                  <li class="amenities-bullet-item">
+                    Tennis and land sports
+                  </li>
+                  <li class="amenities-bullet-item">
+                    State of the art fitness center
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Category 3 -->
+              <div>
+                <h3 class="amenities-category-title">Other Perks</h3>
+                <ul class="amenities-bullet-list">
+                  <li class="amenities-bullet-item">
+                    All tips, taxes and gratuities
+                  </li>
+                  <li class="amenities-bullet-item">
+                    Airport arrival lounge
+                  </li>
+                  <li class="amenities-bullet-item">
+                    Roundtrip airport transfers
+                  </li>
+                  <li class="amenities-bullet-item">
+                    Shuttles to Sandals Royal Caribbean
+                  </li>
+                  <li class="amenities-bullet-item">
+                    BMW airport transfers in select suites
+                  </li>
+                  <li class="amenities-bullet-item">
+                    WIFI in hotel room and all common areas
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- Contact Banner Section -->
+          <section class="contact-banner" aria-label="Contact a booking specialist 1">
+            <div class="contact-banner__content">
+              <h2 class="contact-banner__title">
+                Would You Like To Speak With<br>An All-Inclusive Resort
+                Booking Specialist?
+              </h2>
+              <p class="contact-banner__text">
+                Our dedicated team of booking experts is standing by to answer
+                questions and provide customized assistance through the
+                booking process.
+              </p>
+            </div>
+            <div class="contact-banner__action">
+              <a href="tel:+18889999999" class="btn-phone">
+                <i class="fa-solid fa-phone"></i> +1&nbsp;(888)&nbsp;999&#8209;9999
+              </a>
+            </div>
+          </section>
+
+          <!-- Activities Section -->
+          <section id="activities" class="content-card">
+            <h2 class="content-card__header  ">Activities</h2>
+            <p class="content-card__subtitle">
+              There's Activities For Everyone At Sanctuary Cap Cana
+            </p>
+            <hr class="content-card__divider">
+
+            <div class="activities-grid">
+              <!-- Card 1 -->
+              <div class="activity-card">
+                <img src="https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=400&q=80"
+                  alt="Sanctuary Spa" class="activity-card__img">
+                <div class="activity-card__content">
+                  <h3 class="activity-card__title">Sanctuary Spa</h3>
+                  <p class="activity-card__text">
+                    Rhoncus aliquet nec aliquet dolor. Aliquet nullam
+                    ullamcorper risus fusce. Faucibus duis ullamcorper leo
+                    condimentum ornare purus enim. Ultrices mi pellentesque
+                    orci rhoncus egestas pellentesqu
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 2 -->
+              <div class="activity-card">
+                <img
+                  src="https://i.dailymail.co.uk/1s/2023/12/22/11/79032339-12871177-_The_resort_really_comes_to_life_after_dark_with_live_shows_and_-a-17_1703244460178.jpg"
+                  alt="Epicurean Moments" class="activity-card__img">
+                <div class="activity-card__content">
+                  <h4 class="activity-card__title">Epicurean Moments</h4>
+                  <p class="activity-card__text">
+                    Rhoncus aliquet nec aliquet dolor. Aliquet nullam
+                    ullamcorper risus fusce. Faucibus duis ullamcorper leo
+                    condimentum ornare purus enim. Ultrices mi pellentesque
+                    orci rhoncus egestas pellentes
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 3 -->
+              <div class="activity-card">
+                <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=400&q=80"
+                  alt="Daily Activities" class="activity-card__img">
+                <div class="activity-card__content">
+                  <h4 class="activity-card__title">Daily Activities</h4>
+                  <p class="activity-card__text">
+                    Rhoncus aliquet nec aliquet dolor. Aliquet nullam
+                    ullamcorper risus fusce. Faucibus duis ullamcorper leo
+                    condimentum ornare purus enim. Ultrices mi pellentesque
+                    orci rhoncus egestas pellentes
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 4 -->
+              <div class="activity-card">
+                <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=400&q=80"
+                  alt="Nightly Entertainment" class="activity-card__img">
+                <div class="activity-card__content">
+                  <h4 class="activity-card__title">Nightly Entertainment</h4>
+                  <p class="activity-card__text">
+                    Rhoncus aliquet nec aliquet dolor. Aliquet nullam
+                    ullamcorper risus fusce. Faucibus duis ullamcorper leo
+                    condimentum ornare purus enim. Ultrices mi pellentesque
+                    orci rhoncus egestas pellentes
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 5 -->
+              <div class="activity-card">
+                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=80"
+                  alt="Bali Bed Experience" class="activity-card__img">
+                <div class="activity-card__content">
+                  <h4 class="activity-card__title">Bali Bed Experience</h4>
+                  <p class="activity-card__text">
+                    Rhoncus aliquet nec aliquet dolor. Aliquet nullam
+                    ullamcorper risus fusce. Faucibus duis ullamcorper leo
+                    condimentum ornare purus enim. Ultrices mi pellentesque
+                    orci rhoncus egestas pellentes
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 6 -->
+              <div class="activity-card">
+                <img
+                  src="https://static.vecteezy.com/system/resources/thumbnails/069/895/000/small/a-woman-riding-a-horse-on-the-beach-free-photo.jpeg"
+                  alt="Los Establos Cap Cana" class="activity-card__img">
+                <div class="activity-card__content">
+                  <h4 class="activity-card__title">Los Establos Cap Cana</h4>
+                  <p class="activity-card__text">
+                    Rhoncus aliquet nec aliquet dolor. Aliquet nullam
+                    ullamcorper risus fusce. Faucibus duis ullamcorper leo
+                    condimentum ornare purus enim. Ultrices mi pellentesque
+                    orci rhoncus egestas pellentes
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-right">
+              <button type="button" class="link-show-more">See All Activities</button>
+            </div>
+          </section>
+
+          <!-- Reviews Section -->
+          <section id="reviews" class="content-card">
+            <div class="reviews-header">
+              <div>
+                <h2 class="content-card__header">Reviews</h2>
+                <p class="content-card__subtitle">
+                  Condimentum Cursus Commodo Lorema Non Mi Turpis Semper
+                  Dictum
+                </p>
+              </div>
+              <div class="reviews-overall-rating">
+                <i class="fa-solid fa-star"></i>
+                <strong>4.5</strong>
+                <span>(1,250 Reviews)</span>
+              </div>
+            </div>
+            <hr class="content-card__divider">
+
+            <div class="reviews-grid">
+              <!-- Review Card 1 -->
+              <div class="review-card">
+                <div class="review-card__header">
+                  <h3 class="review-card__name">Jennifer H.</h3>
+                  <div class="review-card__meta">
+                    <i class="fa-solid fa-star"></i>
+                    <strong>4.5</strong>
+                    <span class="review-card__date">| Jul 7, 2023 04:02:06 AM</span>
+                  </div>
+                </div>
+                <div class="review-card__text expandable-section">
+                  <div class="expandable-content">
+                    <p>We use VRBO a fair amount compared to others we know and
+                      this place offered the best in support, communication and
+                      personalized service we've had so far. We visited for 5 days
+                      at the end of a 2plus week Italian vacation and were so
+                      happy when we arrived at the house to meet our lovely host,
+                      Alessia and her family. The pictures can't do it justice,
+                      especially the rooftop area and views...
+                    </p>
+                    <div class="expandable-extra">
+                      <p>
+                        The house is in a great location, close to the train station
+                        and a short walk to the main square and beach. It is in a
+                        quiet area but still close to everything. The rooftop area is
+                        amazing with views of the city and the sea, and it was a
+                        perfect place to relax after a day of exploring.
+                      </p>
+                    </div>
+                  </div>
+                  <button type="button" class="link-show-more expandable-toggle" aria-expanded="false">
+                    Show more
+                  </button>
+                </div>
+              </div>
+
+              <!-- Review Card 2 -->
+              <div class="review-card">
+                <div class="review-card__header">
+                  <h4 class="review-card__name">Lynn Symonds</h4>
+                  <div class="review-card__meta">
+                    <i class="fa-solid fa-star"></i>
+                    <strong>4.5</strong>
+                    <span class="review-card__date">| Jul 7, 2023 04:02:06 AM</span>
+                  </div>
+                </div>
+                <div class="review-card__text expandable-section">
+                  <div class="expandable-content">
+                    <p>We use VRBO a fair amount compared to others we know and
+                      this place offered the best in support, communication and
+                      personalized service we've had so far. We visited for 5 days
+                      at the end of a 2plus week Italian vacation and were so
+                      happy when we arrived at the house to meet our lovely host,
+                      Alessia and her family. The pictures can't do it justice,
+                      especially the rooftop area and views...
+                    </p>
+                    <div class="expandable-extra">
+                      <p>
+                        The house is in a great location, close to the train station
+                        and a short walk to the main square and beach. It is in a
+                        quiet area but still close to everything. The rooftop area is
+                        amazing with views of the city and the sea, and it was a
+                        perfect place to relax after a day of exploring.
+                      </p>
+                    </div>
+                  </div>
+                  <button type="button" class="link-show-more expandable-toggle" aria-expanded="false">
+                    Show more
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-right">
+              <button type="button" class="link-show-more">See All Reviews</button>
+            </div>
+          </section>
+
+          <!-- Policies Section -->
+          <section id="policies" class="content-card">
+            <h2 class="content-card__header ">Policies</h2>
+            <p class="content-card__subtitle">
+              Condimentum Cursus Commodo Lorema Non Mi Turpis Semper Dictum
+            </p>
+            <hr class="content-card__divider">
+
+            <div class="policies-grid">
+              <!-- Check-in -->
+              <div class="policy-card">
+                <div class="policy-card__icon">
+                  <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </div>
+                <div class="policy-card__content">
+                  <h3 class="policy-card__title">Check-in</h3>
+                  <p class="policy-card__text">Check-in time starts at 3:00 PM</p>
+                </div>
+              </div>
+
+              <!-- Check-out -->
+              <div class="policy-card">
+                <div class="policy-card__icon">
+                  <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </div>
+                <div class="policy-card__content">
+                  <h4 class="policy-card__title">Check-out</h4>
+                  <p class="policy-card__text">Check-out before 11:30 AM</p>
+                </div>
+              </div>
+
+              <!-- Age Restrictions -->
+              <div class="policy-card">
+                <div class="policy-card__icon">
+                  <i class="local-icon">
+                    <img src="/assets/icons/age.png" alt="age refresh icon">
+                  </i>
+                </div>
+                <div class="policy-card__content">
+                  <h4 class="policy-card__title">Age Restrictions</h4>
+                  <p class="policy-card__text">Minimum check-in age : 18</p>
+                </div>
+              </div>
+
+              <!-- Child Policy -->
+              <div class="policy-card">
+                <div class="policy-card__icon">
+                  <i class="fa-solid fa-baby"></i>
+                </div>
+                <div class="policy-card__content">
+                  <h4 class="policy-card__title">Child Policy</h4>
+                  <p class="policy-card__text">Children are not allowed</p>
+                </div>
+              </div>
+
+              <!-- Pet Policy -->
+              <div class="policy-card">
+                <div class="policy-card__icon">
+                  <i class="fa-solid fa-dog"></i>
+                </div>
+                <div class="policy-card__content">
+                  <h4 class="policy-card__title">Pet Policy</h4>
+                  <p class="policy-card__text">Pets are not allowed</p>
+                </div>
+              </div>
+
+              <!-- Smoking Policy -->
+              <div class="policy-card">
+                <div class="policy-card__icon">
+                  <i class="fa-solid fa-ban-smoking"></i>
+                </div>
+                <div class="policy-card__content">
+                  <h4 class="policy-card__title">Smoking Policy</h4>
+                  <p class="policy-card__text">Smoking is permitted</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- FAQ Section -->
+          <section id="faqs" class="content-card">
+            <h2 class="content-card__header">Frequently Asked Questions</h2>
+            <p class="content-card__subtitle">
+              Condimentum Cursus Commodo Lorema Non Mi Turpis Semper Dictum
+            </p>
+
+            <div class="faq-container">
+              <!-- FAQ Item 1 -->
+              <details class="faq-item">
+                <summary class="faq-summary">
+                  <span class="faq-question">Is Sanctuary Cap Cana all-inclusive?</span>
+                  <span class="faq-icon"></span>
+                </summary>
+                <div class="faq-content">
+                  <p>Massa nec a nisl duis vitae ut mattis ac. Fames cras lobortis dolor eu facilisis varius sodales
+                    adipiscing. Porta vitae ipsum felis accumsan imperdiet. A lectus lacinia bibendum dui consectetur
+                    egestas at. Convallis mi quam sed maecenas malesuada vitae augue amet.</p>
+                </div>
+              </details>
+
+              <!-- FAQ Item 2 -->
+              <details class="faq-item">
+                <summary class="faq-summary">
+                  <span class="faq-question">What activities are available at Sanctuary Cap Cana?</span>
+                  <span class="faq-icon"></span>
+                </summary>
+                <div class="faq-content">
+                  <p>We offer a wide range of activities including PADI-certified SCUBA diving, tennis, state-of-the-art
+                    fitness center, non-motorized water sports like kayaking and paddleboarding, and daily/nightly
+                    entertainment.</p>
+                </div>
+              </details>
+
+              <!-- FAQ Item 3 -->
+              <details class="faq-item">
+                <summary class="faq-summary">
+                  <span class="faq-question">What airport is closest to Sanctuary Cap Cana?</span>
+                  <span class="faq-icon"></span>
+                </summary>
+                <div class="faq-content">
+                  <p>Punta Cana International Airport (PUJ) is the closest airport to the resort, located just a short
+                    15-minute drive away. We offer roundtrip airport transfers for your convenience.</p>
+                </div>
+              </details>
+
+              <!-- FAQ Item 4 -->
+              <details class="faq-item">
+                <summary class="faq-summary">
+                  <span class="faq-question">Is Sanctuary Cap Cana adult only or family friendly?</span>
+                  <span class="faq-icon"></span>
+                </summary>
+                <div class="faq-content">
+                  <p>Sanctuary Cap Cana is an exclusive adults-only resort designed for guests seeking unparalleled
+                    luxury, tranquility, and a romantic atmosphere. All guests must be 18 years of age or older.</p>
+                </div>
+              </details>
+            </div>
+          </section>
+
+          <!-- Location Section -->
+          <section id="location" class="content-card">
+            <h2 class="content-card__header  ">Location</h2>
+            <p class="content-card__subtitle">
+              Condimentum Cursus Commodo Lorema Non Mi Turpis Semper Dictum
+            </p>
+
+            <div class="location-grid">
+              <!-- Left Map -->
+              <div class="location-map">
+                <!-- High-quality Unsplash map placeholder -->
+                <img src="assets/airport_to_cap_cana.png" alt="The path from Punta Cana airport to Sanctuary Cap Cana"
+                  class="location-map__img">
+              </div>
+
+              <!-- Right Card -->
+              <div class="getting-there-card">
+                <h3 class="getting-there-card__title">Getting to the resort</h3>
+                <hr class="getting-there-card__divider">
+                <p class="getting-there-card__subtitle">Distance to nearest airports from<br>Sanctuary Cap Cana</p>
+
+                <div class="airport-list">
+                  <div class="airport-card">
+                    <span class="airport-card__name">Punta Cana Airport</span>
+                    <span class="airport-card__distance"><i class="fa-solid fa-car"></i> 6.6 mi</span>
+                  </div>
+                  <div class="airport-card">
+                    <span class="airport-card__name">La Romana Airport</span>
+                    <span class="airport-card__distance"><i class="fa-solid fa-car"></i> 33.1 mi</span>
+                  </div>
+                </div>
+
+                <p class="getting-there-card__text">Massa nec a nisl duis vitae ut mattis acaames lobortis dolor eu
+                  facilisis varius sodales adipiscing. Porta vitae ipsum felis accumsan imperdiet a lectus lacinia
+                  bibendu onsectea</p>
+              </div>
+            </div>
+          </section>
+        </div>
+        <!-- Right Sidebar -->
+        <aside class="sidebar" aria-label="Booking widget">
+          <div class="booking-card">
+            <div class="booking-card__main">
+              <h2 class="booking-card__title">Check Villa Availability</h2>
+
+              <!-- Custom styled date dropdowns to match the image -->
+              <div class="booking-card__dates">
+                <button type="button" class="booking-card__date-display" id="checkInField">
+                  <span>Check-in</span>
+                  <i class="fa-solid fa-chevron-down"></i>
+                </button>
+
+                <button type="button" class="booking-card__date-display" id="checkOutField">
+                  <span>Check-out</span>
+                  <i class="fa-solid fa-chevron-down"></i>
+                </button>
+
+                <input type="text" id="bookingDateRange" class="booking-date-input"
+                  aria-label="Select check-in and check-out date range" readonly>
+              </div>
+
+              <!-- Availability status -->
+              <div class="booking-card__availability">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>Dates selected are available</span>
+              </div>
+
+              <!-- Price rows -->
+              <div class="booking-card__price-row">
+                <span>Price Per Night</span>
+                <span id="pricePerNight">USD $2,026</span>
+              </div>
+
+              <div class="booking-card__price-row booking-card__price-row--total">
+                <span>Total Price</span>
+                <span id="totalPrice">USD $0</span>
+              </div>
+
+              <!-- CTA button -->
+              <a href="#" class="btn btn--primary btn--full">Check Availability</a>
+
+              <!-- Redirect notice -->
+              <p class="booking-card__redirect">
+                You will be redirected to
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e3/Booking.com_logo2.png" alt="Booking.com"
+                  class="booking-card__partner-logo">
+              </p>
+
+              <div class="booking-card__paragraph">
+                <p>
+                  Non enim amet diam morbi sed nunc utnetus rhoncus.<br>Euismod
+                  sit suspendisse at mauris integer at.
+                </p>
+              </div>
+
+              <div class="sidebar-phone">
+                <a href="tel:+18889999999" class="sidebar-phone__number">
+                  <i class="fa-solid fa-phone"></i> +1&nbsp;(888)&nbsp;999&#8209;9999
+                </a>
+              </div>
+
+              <!-- Hot deal notice -->
+              <div class="booking-card__hot-deal" role="status">
+                <span aria-hidden="true">🔥</span>
+                <span>Hot Deal - It has been viewed 8 times today</span>
+              </div>
+            </div>
+
+            <!-- Separated footer for the "Not the right fit?" section -->
+            <div class="booking-card__footer">
+              <div class="sidebar-alt__text">
+                <p>
+                  Not the right fit? Check out our other<br>properties in
+                  <button type="button" class="btn-text">Bayahibe Hotels</button>
+                </p>
+              </div>
+              <div class="local-icon">
+                <img src="assets/icons/house.png" alt="house search icon">
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Nearby Resorts Section -->
+      <section class="nearby-section">
+
+
+        <div class="nearby-section__top">
+          <div>
+            <h2 class="nearby-section__title">Other All-Inclusive Resorts You May Like Nearby</h2>
+            <p class="nearby-section__subtitle">Condimentum Cursus Commodo Lorema Non Mi Turpis Semper Dictum</p>
+          </div>
+
+          <div class="nearby-sort">
+            <label for="nearbySort" class="nearby-sort__label">Sort by</label>
+            <select id="nearbySort" class="nearby-sort__select">
+              <option value="most-popular" selected>Most Popular</option>
+              <option value="highest-price">Highest Price</option>
+              <option value="lowest-price">Lowest Price</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="nearby-layout">
+          <!-- Left: Cards Grid -->
+          <div class="nearby-grid" id="nearbyGrid"></div>
+
+          <!-- Right: Map -->
+          <aside class="map-sidebar" aria-label="sidebar map">
+            <iframe title="google map" class="map-sidebar__viewport"
+              src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3650.7975280548776!2d90.40746357608668!3d23.790223287244903!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sbd!4v1778129680902!5m2!1sen!2sbd"
+              allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </aside>
+        </div>
+      </section>
+
+      <!-- Contact Banner Section 2 -->
+      <section class="contact-banner" aria-label="Contact a booking specialist 2">
+        <div class="contact-banner__content">
+          <h2 class="contact-banner__title">
+            Questions?<br>Contact An All-Inclusive Booking Specialist
+          </h2>
+          <p class="contact-banner__text">
+            Our dedicated team of booking experts is standing by to answer questions and provide customized assistance
+            through the all-inclusive booking process
+          </p>
+        </div>
+        <div class="contact-banner__action">
+          <a href="tel:+18889999999" class="btn-phone">
+            <i class="fa-solid fa-phone"></i> +1&nbsp;(888)&nbsp;999&#8209;9999
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer Section -->
+  <footer class="site-footer">
+    <div class="container">
+
+      <!-- Newsletter -->
+      <div class="footer-newsletter">
+        <h2 class="footer-newsletter__title">Subscribe to newsletter</h2>
+        <form class="newsletter-form">
+          <input type="email" class="newsletter-form__input" placeholder="Please enter your email" required>
+          <button type="submit" class="newsletter-form__btn">Subscribe now</button>
+        </form>
+        <p class="footer-newsletter__text">By subscribing, you agree to our Privacy Policy and Terms of Use.</p>
+      </div>
+
+      <!-- Links & Brand -->
+      <div class="footer-content">
+        <div class="footer-col">
+          <h3 class="footer-col__title">Europe</h3>
+          <ul class="footer-list">
+            <li><a href="#" class="footer-list__link">Spain</a></li>
+            <li><a href="#" class="footer-list__link">Greece</a></li>
+            <li><a href="#" class="footer-list__link">Turkey</a></li>
+            <li><a href="#" class="footer-list__link">Cyprus</a></li>
+            <li><a href="#" class="footer-list__link">Bulgaria</a></li>
+            <li><a href="#" class="footer-list__link">Portugal</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3 class="footer-col__title">Asian</h3>
+          <ul class="footer-list">
+            <li><a href="#" class="footer-list__link">Maldives</a></li>
+            <li><a href="#" class="footer-list__link">Indonesia</a></li>
+            <li><a href="#" class="footer-list__link">Thailand</a></li>
+            <li><a href="#" class="footer-list__link">Philippines</a></li>
+            <li><a href="#" class="footer-list__link">Vietnam</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3 class="footer-col__title">Caribbean</h3>
+          <ul class="footer-list footer-list--2cols">
+            <li><a href="#" class="footer-list__link">Anguilla</a></li>
+            <li><a href="#" class="footer-list__link">Jamaica</a></li>
+            <li><a href="#" class="footer-list__link">Bahamas</a></li>
+            <li><a href="#" class="footer-list__link">Turks and Caicos</a></li>
+            <li><a href="#" class="footer-list__link">Cayman Islands</a></li>
+            <li><a href="#" class="footer-list__link">Aruba</a></li>
+            <li><a href="#" class="footer-list__link">St. Lucia</a></li>
+            <li><a href="#" class="footer-list__link">Antigua - Renowned</a></li>
+            <li><a href="#" class="footer-list__link">Barbados</a></li>
+            <li><a href="#" class="footer-list__link">Dominican Republic</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-contact">
+          <div class="footer-contact__top">
+            <a class="btn-outline" href="tel:+18889999999">
+              <i class="fa-solid fa-phone"></i>
+              <span class="footer-contact__top-text">Agent<br>Hotline</span>
+              <div class="light-divider"></div>
+              <span class="footer-contact__top-text">+1&nbsp;(888)&nbsp;999&#8209;9999</span>
+            </a>
+            <div class="social-icons">
+              <a href="#" class="social-icon" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+              <a href="#" class="social-icon" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+              <a href="#" class="social-icon" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+          </div>
+
+          <div class="footer-brand">
+            <!-- TravelAI Logo SVG -->
+            <div class="footer-brand__travelai-icon">
+              <img src="assets/icons/travelai.svg" alt="travelai logo">
+            </div>
+            <div class="light-divider"></div>
+            <p class="footer-brand__text">All-inclusive beach resorts<br>Powered by TravelAI</p>
+          </div>
+
+          <div class="footer-links-row">
+            <a href="#">Privacy policy</a> &bull;
+            <a href="#">Terms and conditions</a> &bull;
+            <a href="#">Sitemap</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Selectors & Copyright -->
+      <div class="footer-bottom">
+        <div class="footer-selectors">
+          <div class="footer-select-wrapper">
+            <select class="footer-select" aria-label="Select Currency">
+              <option>USD</option>
+              <option>EUR</option>
+              <option>GBP</option>
+            </select>
+          </div>
+
+          <div class="footer-select-wrapper">
+            <select class="footer-select" aria-label="Select Country">
+              <option>United States</option>
+              <option>Canada</option>
+              <option>United Kingdom</option>
+            </select>
+          </div>
+        </div>
+        <div class="footer-copyright">
+          &copy; 2024 All-inclusive beach resorts. All Rights Reserved
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/fecha@4.2.3/lib/fecha.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hotel-datepicker@4.12.2/dist/js/hotel-datepicker.min.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

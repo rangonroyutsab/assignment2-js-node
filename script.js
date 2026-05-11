@@ -491,10 +491,10 @@ async function loadGoogleMapsApi() {
 
 
 const MAP_POINTER_ICON =
-    "https://static.hotala.com/release/30.8.2/static/images/sites/hotala.com/map_pointer.svg";
+    "/assets/icons/map_pointer.svg";
 
 const MAP_POINTER_HOVER_ICON =
-    "https://static.hotala.com/release/30.8.2/static/images/sites/hotala.com/map_pointer_hover.svg";
+    "/assets/icons/map_pointer_hover.svg";
 
 const DEFAULT_MAP_CENTER = {
     lat: 39.8283,

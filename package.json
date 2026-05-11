@@ -4,6 +4,7 @@
   "description": "A fully responsive, modern, single-page booking landing page for a luxury resort, built entirely from scratch using plain HTML5 and CSS3.",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

@@ -1082,6 +1082,13 @@ details[open] .faq-icon::before {
   flex-direction: column;
   /* justify-content: space-between; */
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.04);
+  border: 2px solid transparent;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nearby-card.is-selected {
+  border-color: var(--color-orange);
+  box-shadow: 0 0 0 2px rgba(123, 44, 191, 0.12);
 }
 
 
@@ -1122,18 +1129,18 @@ details[open] .faq-icon::before {
   backdrop-filter: blur(2px);
 }
 
-  .nearby-card__btn-icon--favorite {
-    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-  }
+.nearby-card__btn-icon--favorite {
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
 
-  .nearby-card__btn-icon--favorite.is-active {
-    /* background: #ffffff; */
-    color: red;
-  }
+.nearby-card__btn-icon--favorite.is-active {
+  /* background: #ffffff; */
+  color: red;
+}
 
-  .nearby-card__btn-icon--favorite:active {
-    transform: scale(0.92);
-  }
+.nearby-card__btn-icon--favorite:active {
+  transform: scale(0.92);
+}
 
 
 .nearby-card__btn-icon:hover {
@@ -1836,9 +1843,12 @@ select {
 }
 
 .map-sidebar__viewport {
+  width: 100%;
   height: 100%;
   min-height: 420px;
+  border: 0;
 }
+
 
 .site-footer {
   height: auto;
@@ -2186,7 +2196,7 @@ select {
     min-width: 0;
   }
 
-  
+
 
   s .contact-banner {
     flex-direction: column;

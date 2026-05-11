@@ -22,8 +22,6 @@ function getApiUrl(sortValue = "most-popular") {
     return `/get-property?${sortQuery}&limit=${limit}`;
 }
 
-
-
 function formatPrice(price) {
     const number = Number(price);
 
@@ -107,13 +105,7 @@ function createSkeletonCards(count = getPlatformLimit()) {
 }
 
 
-const heartButtons = document.querySelectorAll(".nearby-card__btn-icon");
 
-heartButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    button.classList.toggle("is-active");
-  });
-});
 
 function getFavouriteProperties() {
     try {
@@ -199,7 +191,7 @@ function createNearbyCard(item, index) {
     const partner = item?.Partner || {};
     const counts = property?.Counts || {};
 
-    const propertyId = item.ID || property.PropertySlug || `property-${index}`;
+    const propertyId = getPropertyId(item, index);
     const isFavourite = isPropertyFavourite(propertyId);
 
     const name = property.PropertyName || "Hotel Name Goes Here";
@@ -405,8 +397,10 @@ function initBookingDatepicker() {
         startDate: getTodayForDatepicker(),
         minNights: 1,
         selectForward: true,
-        autoClose: true,
+        autoClose: false,
         clearButton: true,
+        // submitButton: true,
+        topbarPosition: "bottom",
         onSelectRange: function () {
             updateBookingDatesFromInput();
         }
@@ -444,9 +438,14 @@ async function loadNearbyCards(sortValue = "most-popular") {
             return;
         }
 
+        currentNearbyProperties = properties;
+        selectedPropertyId = null;
+
         nearbyGrid.innerHTML = properties
             .map((item, index) => createNearbyCard(item, index))
             .join("");
+
+        renderNearbyMarkers(properties);
     } catch (error) {
         nearbyGrid.innerHTML = `
       <p class="nearby-loading">
@@ -457,6 +456,177 @@ async function loadNearbyCards(sortValue = "most-popular") {
         console.error(error);
     }
 }
+
+async function loadGoogleMapsApi() {
+    try {
+        const response = await fetch("/map-config");
+
+        if (!response.ok) {
+            throw new Error("Could not load map config");
+        }
+
+        const config = await response.json();
+        const apiKey = config.googleMapsApiKey;
+
+        if (!apiKey) {
+            console.warn("Google Maps API key is missing.");
+            return;
+        }
+
+        if (window.google && window.google.maps) {
+            initNearbyMap();
+            return;
+        }
+
+        const script = document.createElement("script");
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&callback=initNearbyMap`;
+        script.async = true;
+        script.defer = true;
+
+        document.body.appendChild(script);
+    } catch (error) {
+        console.error("Google Maps could not be loaded:", error);
+    }
+}
+
+
+const MAP_POINTER_ICON =
+    "https://static.hotala.com/release/30.8.2/static/images/sites/hotala.com/map_pointer.svg";
+
+const MAP_POINTER_HOVER_ICON =
+    "https://static.hotala.com/release/30.8.2/static/images/sites/hotala.com/map_pointer_hover.svg";
+
+const DEFAULT_MAP_CENTER = {
+    lat: 39.8283,
+    lng: -98.5795
+};
+
+let nearbyMap = null;
+let nearbyMarkers = [];
+let currentNearbyProperties = [];
+let selectedPropertyId = null;
+
+function getPropertyId(item, index) {
+    return item?.ID || item?.Property?.PropertySlug || `property-${index}`;
+}
+
+function getPropertyPosition(item) {
+    const lat = Number(item?.GeoInfo?.Lat);
+    const lng = Number(item?.GeoInfo?.Lng);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+        return null;
+    }
+
+    return { lat, lng };
+}
+
+function clearNearbyMarkers() {
+    nearbyMarkers.forEach((marker) => {
+        marker.setMap(null);
+    });
+
+    nearbyMarkers = [];
+}
+
+function getMarkerIcon(isSelected = false) {
+    return {
+        url: isSelected ? MAP_POINTER_HOVER_ICON : MAP_POINTER_ICON,
+        scaledSize: new google.maps.Size(38, 48),
+        anchor: new google.maps.Point(19, 48)
+    };
+}
+
+function selectNearbyProperty(propertyId) {
+    selectedPropertyId = String(propertyId);
+
+    document.querySelectorAll(".nearby-card").forEach((card) => {
+        card.classList.toggle(
+            "is-selected",
+            card.dataset.propertyId === selectedPropertyId
+        );
+    });
+
+    nearbyMarkers.forEach((marker) => {
+        const isSelected = marker.propertyId === selectedPropertyId;
+
+        marker.setIcon(getMarkerIcon(isSelected));
+        marker.setZIndex(isSelected ? 999 : 1);
+    });
+}
+
+function renderNearbyMarkers(properties = currentNearbyProperties) {
+    if (!nearbyMap || typeof google === "undefined") return;
+
+    clearNearbyMarkers();
+
+    const bounds = new google.maps.LatLngBounds();
+    let hasValidPosition = false;
+
+    properties.forEach((item, index) => {
+        const position = getPropertyPosition(item);
+
+        if (!position) return;
+
+        const propertyId = String(getPropertyId(item, index));
+
+        const marker = new google.maps.Marker({
+            map: nearbyMap,
+            position,
+            icon: getMarkerIcon(propertyId === selectedPropertyId),
+            zIndex: propertyId === selectedPropertyId ? 999 : 1
+        });
+
+        marker.propertyId = propertyId;
+
+        marker.addListener("click", () => {
+            selectNearbyProperty(propertyId);
+
+            const card = document.querySelector(
+                `.nearby-card[data-property-id="${CSS.escape(propertyId)}"]`
+            );
+
+            if (card) {
+                card.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest",
+                    inline: "nearest"
+                });
+            }
+        });
+
+        nearbyMarkers.push(marker);
+        bounds.extend(position);
+        hasValidPosition = true;
+    });
+
+    if (hasValidPosition) {
+        nearbyMap.fitBounds(bounds);
+    } else {
+        nearbyMap.setCenter(DEFAULT_MAP_CENTER);
+        nearbyMap.setZoom(4);
+    }
+}
+
+function initNearbyMap() {
+    const mapEl = document.getElementById("nearbyMap");
+
+    if (!mapEl || typeof google === "undefined") return;
+
+    nearbyMap = new google.maps.Map(mapEl, {
+        center: DEFAULT_MAP_CENTER,
+        zoom: 4,
+        mapTypeControl: true,
+        streetViewControl: false,
+        fullscreenControl: true
+    });
+
+    renderNearbyMarkers();
+}
+
+window.initNearbyMap = initNearbyMap;
+
+
 
 function handleExpandableClick(event) {
     const button = event.target.closest(".expandable-toggle");
@@ -494,9 +664,10 @@ function initNearbySorting() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  initNearbySorting();
-  initFavouriteButtons();
-  initExpandableSections();
-  initBookingDatepicker();
-  loadNearbyCards("most-popular");
+    initNearbySorting();
+    initFavouriteButtons();
+    initExpandableSections();
+    initBookingDatepicker();
+    loadNearbyCards("most-popular");
+    loadGoogleMapsApi();
 });

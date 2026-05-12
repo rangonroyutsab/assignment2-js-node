@@ -224,9 +224,15 @@ function createNearbyCard(item, index) {
             <i class="fa-solid fa-comment"></i>
           </button>
 
-          <button type="button" class="nearby-card__btn-icon" aria-label="Map">
-            <i class="fa-solid fa-location-dot"></i>
-          </button>
+          <button
+            type="button"
+            class="nearby-card__btn-icon nearby-card__btn-icon--map ${selectedPropertyId === String(propertyId) ? "is-active" : ""}"
+            aria-label="Show on map"
+            data-map-button
+            data-property-id="${escapeHtml(propertyId)}"
+            >           
+                <i class="fa-solid fa-location-dot"></i>
+            </button>
 
           <button
             type="button"
@@ -489,12 +495,7 @@ async function loadGoogleMapsApi() {
     }
 }
 
-
-const MAP_POINTER_ICON =
-    "/assets/icons/map_pointer.svg";
-
-const MAP_POINTER_HOVER_ICON =
-    "/assets/icons/map_pointer_hover.svg";
+const SITE_ACCENT_COLOR = "#ef7c00";
 
 const DEFAULT_MAP_CENTER = {
     lat: 39.8283,
@@ -530,10 +531,30 @@ function clearNearbyMarkers() {
 }
 
 function getMarkerIcon(isSelected = false) {
+    const fillColor = isSelected ? SITE_ACCENT_COLOR : "#ffffff";
+    const circleColor = isSelected ? "#ffffff" : SITE_ACCENT_COLOR;
+
+    const svg = `
+        <svg width="42" height="52" viewBox="0 0 42 52" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M21 1C10.5 1 2 9.5 2 20C2 34.5 21 51 21 51C21 51 40 34.5 40 20C40 9.5 31.5 1 21 1Z"
+                fill="${fillColor}"
+                stroke="${SITE_ACCENT_COLOR}"
+                stroke-width="3"
+            />
+            <circle
+                cx="21"
+                cy="20"
+                r="8"
+                fill="${circleColor}"
+            />
+        </svg>
+    `;
+
     return {
-        url: isSelected ? MAP_POINTER_HOVER_ICON : MAP_POINTER_ICON,
-        scaledSize: new google.maps.Size(38, 48),
-        anchor: new google.maps.Point(19, 48)
+        url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`,
+        scaledSize: new google.maps.Size(42, 52),
+        anchor: new google.maps.Point(21, 52)
     };
 }
 
@@ -541,10 +562,15 @@ function selectNearbyProperty(propertyId) {
     selectedPropertyId = String(propertyId);
 
     document.querySelectorAll(".nearby-card").forEach((card) => {
-        card.classList.toggle(
-            "is-selected",
-            card.dataset.propertyId === selectedPropertyId
-        );
+        const isSelected = card.dataset.propertyId === selectedPropertyId;
+
+        card.classList.toggle("is-selected", isSelected);
+
+        const mapButton = card.querySelector("[data-map-button]");
+
+        if (mapButton) {
+            mapButton.classList.toggle("is-active", isSelected);
+        }
     });
 
     nearbyMarkers.forEach((marker) => {
@@ -627,6 +653,52 @@ function initNearbyMap() {
 window.initNearbyMap = initNearbyMap;
 
 
+function handleMapBadgeClick(event) {
+    const button = event.target.closest("[data-map-button]");
+
+    if (!button) return;
+
+    event.stopPropagation();
+
+    const propertyId = button.dataset.propertyId;
+
+    if (!propertyId) return;
+
+    selectNearbyProperty(propertyId);
+
+    const marker = nearbyMarkers.find((item) => item.propertyId === propertyId);
+
+    if (marker && nearbyMap) {
+        nearbyMap.panTo(marker.getPosition());
+        // nearbyMap.setZoom(Math.max(nearbyMap.getZoom(), 10));
+    }
+}
+
+function handleNearbyCardSelection(event) {
+    const card = event.target.closest(".nearby-card");
+
+    if (!card || !nearbyGrid.contains(card)) return;
+
+    if (
+        event.target.closest("a") ||
+        event.target.closest("button")
+    ) {
+        return;
+    }
+
+    const propertyId = card.dataset.propertyId;
+
+    if (!propertyId) return;
+
+    selectNearbyProperty(propertyId);
+
+    const marker = nearbyMarkers.find((item) => item.propertyId === propertyId);
+
+    if (marker && nearbyMap) {
+        nearbyMap.panTo(marker.getPosition());
+        // nearbyMap.setZoom(Math.max(nearbyMap.getZoom(), 10));
+    }
+}
 
 function handleExpandableClick(event) {
     const button = event.target.closest(".expandable-toggle");
@@ -647,10 +719,12 @@ function initExpandableSections() {
     document.addEventListener("click", handleExpandableClick);
 }
 
-function initFavouriteButtons() {
+function initNearbyCardActions() {
     if (!nearbyGrid) return;
 
     nearbyGrid.addEventListener("click", handleFavouriteClick);
+    nearbyGrid.addEventListener("click", handleMapBadgeClick);
+    nearbyGrid.addEventListener("click", handleNearbyCardSelection);
 }
 
 function initNearbySorting() {
@@ -665,7 +739,7 @@ function initNearbySorting() {
 
 document.addEventListener("DOMContentLoaded", () => {
     initNearbySorting();
-    initFavouriteButtons();
+    initNearbyCardActions();
     initExpandableSections();
     initBookingDatepicker();
     loadNearbyCards("most-popular");

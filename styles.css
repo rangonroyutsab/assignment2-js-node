@@ -1082,13 +1082,15 @@ details[open] .faq-icon::before {
   flex-direction: column;
   /* justify-content: space-between; */
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.04);
-  border: 2px solid transparent;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  
+  
 }
 
 .nearby-card.is-selected {
+  border: 2px solid transparent;
   border-color: var(--color-orange);
   box-shadow: 0 0 0 2px rgba(123, 44, 191, 0.12);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 
@@ -1140,6 +1142,15 @@ details[open] .faq-icon::before {
 
 .nearby-card__btn-icon--favorite:active {
   transform: scale(0.92);
+}
+
+.nearby-card__btn-icon--map.is-active {
+  /* background: #ffffff; */
+  color: var(--color-orange);
+}
+
+.nearby-card__btn-icon--map.is-active i {
+  color: var(--color-orange);
 }
 
 

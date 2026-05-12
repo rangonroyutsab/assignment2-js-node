@@ -147,6 +147,7 @@ h1 {
     padding-inline: 0;
     margin-inline: 0;
   }
+
 }
 
 .divider {
@@ -2023,7 +2024,7 @@ details[open] .faq-icon::before {
   height: 833px;
   border-radius: var(--radius-md);
   overflow: hidden;
-  border: 1px solid #eef2f5;
+  /* border: 1px solid #eef2f5; */
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.04);
 }
 
@@ -2067,14 +2068,21 @@ details[open] .faq-icon::before {
   }
 
   .map-sidebar {
-    position: static;
-    height: 420px;
+    /* position: static; */
+    /* height: 420px; */
+    display: none;
   }
 }
 
 
 /* Mobile responsive styles */
 @media (max-width: 768px) {
+  .nearby-section {
+    width: 100%;
+    max-width: var(--max-width);
+    margin-inline: auto;
+    padding-inline: var(--space-xl);
+  }
   .nearby-layout {
     grid-template-columns: 1fr;
   }
@@ -2136,7 +2144,8 @@ details[open] .faq-icon::before {
   }
 
   .map-sidebar {
-    height: 280px;
+    /* height: 280px; */
+    display: none;
   }
 }
 
@@ -2318,7 +2327,7 @@ details[open] .faq-icon::before {
 }
 
 .sidebar-phone__number {
-  font-size: 1.6rem;
+  font-size: 1.25rem;
   font-weight: 800;
   color: #222;
   display: flex;
@@ -2460,6 +2469,8 @@ details[open] .faq-icon::before {
   color: #ffffff;
   padding: 80px 0 40px;
 }
+
+
 
 .footer-newsletter {
   text-align: center;
@@ -2712,6 +2723,13 @@ details[open] .faq-icon::before {
 
 /* Mobile responsive styles */
 @media (max-width: 768px) {
+  .site-footer {
+      width: 100%;
+        max-width: var(--max-width);
+        margin-inline: auto;
+        padding-inline: var(--space-xl);
+    }
+
   .footer-content {
     grid-template-columns: 1fr;
   }

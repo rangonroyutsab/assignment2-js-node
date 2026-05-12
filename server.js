@@ -1,9 +1,11 @@
-
-
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
 const { URL } = require("url");
+
+/* =========================================================
+   Environment Setup
+========================================================= */
 
 function loadEnv() {
     const envPath = path.join(__dirname, ".env");
@@ -28,10 +30,19 @@ function loadEnv() {
 
 loadEnv();
 
+/* =========================================================
+   Server Config
+========================================================= */
+
 const PORT = process.env.PORT || 3000;
+
 const ROOT_DIR = __dirname;
 const DATA_DIR = path.join(ROOT_DIR, "data");
 const IMAGES_DIR = path.join(ROOT_DIR, "images");
+
+/* =========================================================
+   MIME Types
+========================================================= */
 
 const mimeTypes = {
     ".html": "text/html; charset=utf-8",
@@ -46,6 +57,10 @@ const mimeTypes = {
     ".ico": "image/x-icon"
 };
 
+/* =========================================================
+   Response Helpers
+========================================================= */
+
 function sendJson(res, statusCode, data) {
     res.writeHead(statusCode, {
         "Content-Type": "application/json; charset=utf-8"
@@ -54,9 +69,25 @@ function sendJson(res, statusCode, data) {
     res.end(JSON.stringify(data, null, 2));
 }
 
+function sendFile(res, filePath, content) {
+    const ext = path.extname(filePath).toLowerCase();
+    const contentType = mimeTypes[ext] || "application/octet-stream";
+
+    res.writeHead(200, {
+        "Content-Type": contentType
+    });
+
+    res.end(content);
+}
+
+/* =========================================================
+   Data Helpers
+========================================================= */
+
 function readJson(fileName) {
     const filePath = path.join(DATA_DIR, fileName);
     const fileData = fs.readFileSync(filePath, "utf8");
+
     return JSON.parse(fileData);
 }
 
@@ -90,18 +121,29 @@ function applyLimit(items, limitValue) {
     return items.slice(0, limit);
 }
 
+/* =========================================================
+   Property API Helpers
+========================================================= */
+
+function getPropertyFileName(params) {
+    if (params.get("highest-price") === "true") {
+        return "highest_price.json";
+    }
+
+    if (params.get("lowest-price") === "true") {
+        return "lowest_price.json";
+    }
+
+    return "most_popular.json";
+}
+
+/* =========================================================
+   API Route Handlers
+========================================================= */
+
 function handleGetProperty(reqUrl, res) {
     const params = reqUrl.searchParams;
-
-    let fileName = "most_popular.json";
-
-    if (params.get("most-popular") === "true") {
-        fileName = "most_popular.json";
-    } else if (params.get("highest-price") === "true") {
-        fileName = "highest_price.json";
-    } else if (params.get("lowest-price") === "true") {
-        fileName = "lowest_price.json";
-    }
+    const fileName = getPropertyFileName(params);
 
     try {
         const items = getPropertyItems(fileName);
@@ -140,38 +182,51 @@ function handleMapConfig(res) {
     });
 }
 
-function serveStatic(reqUrl, res) {
+/* =========================================================
+   Static File Handler
+========================================================= */
+
+function getStaticFilePath(reqUrl) {
     let pathname = decodeURIComponent(reqUrl.pathname);
 
     if (pathname === "/") {
         pathname = "/index.html";
     }
 
-    const filePath = path.normalize(path.join(ROOT_DIR, pathname));
+    return path.normalize(path.join(ROOT_DIR, pathname));
+}
 
-    if (!filePath.startsWith(ROOT_DIR)) {
-        sendJson(res, 403, { error: "Forbidden" });
+function isPathInsideRoot(filePath) {
+    return filePath.startsWith(ROOT_DIR);
+}
+
+function serveStatic(reqUrl, res) {
+    const filePath = getStaticFilePath(reqUrl);
+
+    if (!isPathInsideRoot(filePath)) {
+        sendJson(res, 403, {
+            error: "Forbidden"
+        });
         return;
     }
 
     fs.readFile(filePath, (error, content) => {
         if (error) {
-            sendJson(res, 404, { error: "File not found" });
+            sendJson(res, 404, {
+                error: "File not found"
+            });
             return;
         }
 
-        const ext = path.extname(filePath).toLowerCase();
-        const contentType = mimeTypes[ext] || "application/octet-stream";
-
-        res.writeHead(200, {
-            "Content-Type": contentType
-        });
-
-        res.end(content);
+        sendFile(res, filePath, content);
     });
 }
 
-const server = http.createServer((req, res) => {
+/* =========================================================
+   Router
+========================================================= */
+
+function handleRequest(req, res) {
     const reqUrl = new URL(req.url, `http://${req.headers.host}`);
 
     if (req.method === "GET" && reqUrl.pathname === "/get-property") {
@@ -190,7 +245,13 @@ const server = http.createServer((req, res) => {
     }
 
     serveStatic(reqUrl, res);
-});
+}
+
+/* =========================================================
+   Server Startup
+========================================================= */
+
+const server = http.createServer(handleRequest);
 
 server.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);

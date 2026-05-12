@@ -1,15 +1,15 @@
+/* =========================================================
+   DOM REFERENCES
+========================================================= */
+
 const nearbyGrid = document.getElementById("nearbyGrid");
 const nearbySort = document.getElementById("nearbySort");
 
-const FAVOURITES_STORAGE_KEY = "capCanaFavouriteProperties";
-
-const FEATURE_IMAGE_PREFIX = "https://beta.imgservice.rentbyowner.com/640x300/";
-
-const sortApiMap = {
-    "most-popular": "most-popular=true",
-    "highest-price": "highest-price=true",
-    "lowest-price": "lowest-price=true"
-};
+const bookingDateInput = document.getElementById("bookingDateRange");
+const checkInField = document.getElementById("checkInField");
+const checkOutField = document.getElementById("checkOutField");
+const pricePerNightEl = document.getElementById("pricePerNight");
+const totalPriceEl = document.getElementById("totalPrice");
 
 const openGalleryBtn = document.getElementById("openGalleryBtn");
 const galleryModal = document.getElementById("galleryModal");
@@ -18,8 +18,53 @@ const galleryCounter = document.getElementById("galleryCounter");
 const galleryPrevBtn = document.getElementById("galleryPrevBtn");
 const galleryNextBtn = document.getElementById("galleryNextBtn");
 
+
+/* =========================================================
+   CONFIG
+========================================================= */
+
+const FAVOURITES_STORAGE_KEY = "capCanaFavouriteProperties";
+const FEATURE_IMAGE_PREFIX = "https://beta.imgservice.rentbyowner.com/640x300/";
+const PRICE_PER_NIGHT = 2026;
+const SITE_ACCENT_COLOR = "#ef7c00";
+
+const DEFAULT_MAP_CENTER = {
+    lat: 39.8283,
+    lng: -98.5795
+};
+
+const sortApiMap = {
+    "most-popular": "most-popular=true",
+    "highest-price": "highest-price=true",
+    "lowest-price": "lowest-price=true"
+};
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let nearbyMap = null;
+let nearbyMarkers = [];
+let currentNearbyProperties = [];
+let selectedPropertyId = null;
+
 let galleryImages = [];
 let activeGalleryIndex = 0;
+
+
+/* =========================================================
+   GENERAL UTILITIES
+========================================================= */
+
+function escapeHtml(value) {
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
 
 function getPlatformLimit() {
     return window.matchMedia("(max-width: 768px)").matches ? 4 : 6;
@@ -30,6 +75,49 @@ function getApiUrl(sortValue = "most-popular") {
     const limit = getPlatformLimit();
 
     return `/get-property?${sortQuery}&limit=${limit}`;
+}
+
+function createSkeletonCards(count = getPlatformLimit()) {
+    return Array.from(
+        { length: count },
+        () => `
+            <div class="nearby-card nearby-card--skeleton">
+                <div class="skeleton skeleton-image"></div>
+
+                <div class="nearby-card__content">
+                    <div class="skeleton skeleton-line skeleton-line--short"></div>
+                    <div class="skeleton skeleton-line skeleton-line--title"></div>
+                    <div class="skeleton skeleton-line"></div>
+                    <div class="skeleton skeleton-line skeleton-line--small"></div>
+
+                    <div class="skeleton skeleton-footer">
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        `
+    ).join("");
+}
+
+
+/* =========================================================
+   PROPERTY DATA HELPERS
+========================================================= */
+
+function getPropertyId(item, index) {
+    return item?.ID || item?.Property?.PropertySlug || `property-${index}`;
+}
+
+function getPropertyPosition(item) {
+    const lat = Number(item?.GeoInfo?.Lat);
+    const lng = Number(item?.GeoInfo?.Lng);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+        return null;
+    }
+
+    return { lat, lng };
 }
 
 function formatPrice(price) {
@@ -84,38 +172,10 @@ function getProviderLogo(providerUrl = "") {
     return "https://upload.wikimedia.org/wikipedia/commons/5/51/Vrbo.svg";
 }
 
-function escapeHtml(value) {
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
 
-function createSkeletonCards(count = getPlatformLimit()) {
-    return Array.from(
-        { length: count },
-        () => `
-      <div class="nearby-card nearby-card--skeleton">
-        <div class="skeleton skeleton-image"></div>
-        <div class="nearby-card__content">
-          <div class="skeleton skeleton-line skeleton-line--short"></div>
-          <div class="skeleton skeleton-line skeleton-line--title"></div>
-          <div class="skeleton skeleton-line"></div>
-          <div class="skeleton skeleton-line skeleton-line--small"></div>
-          <div class="skeleton skeleton-footer">
-            <span></span>
-            <span></span>
-          </div>
-        </div>
-      </div>
-    `
-    ).join("");
-}
-
-
-
+/* =========================================================
+   FAVOURITES
+========================================================= */
 
 function getFavouriteProperties() {
     try {
@@ -135,6 +195,7 @@ function saveFavouriteProperties(favourites) {
 
 function isPropertyFavourite(propertyId) {
     const favourites = getFavouriteProperties();
+
     return favourites.includes(String(propertyId));
 }
 
@@ -196,6 +257,11 @@ function handleFavouriteClick(event) {
     updateFavouriteButton(button, isFavourite);
 }
 
+
+/* =========================================================
+   NEARBY PROPERTY CARDS
+========================================================= */
+
 function createNearbyCard(item, index) {
     const property = item?.Property || {};
     const partner = item?.Partner || {};
@@ -216,219 +282,93 @@ function createNearbyCard(item, index) {
     const partnerUrl = partner.URL || "#";
 
     return `
-    <div class="nearby-card" data-property-id="${escapeHtml(propertyId)}">
-      <div class="nearby-card__img-wrapper">
-        <img
-          src="${escapeHtml(image)}"
-          alt="${escapeHtml(name)}"
-          class="nearby-card__img"
-          loading="lazy"
-        >
+        <div class="nearby-card" data-property-id="${escapeHtml(propertyId)}">
+            <div class="nearby-card__img-wrapper">
+                <img
+                    src="${escapeHtml(image)}"
+                    alt="${escapeHtml(name)}"
+                    class="nearby-card__img"
+                    loading="lazy"
+                >
 
-        <div class="nearby-card__price">
-          ${escapeHtml(price)}
+                <div class="nearby-card__price">
+                    ${escapeHtml(price)}
+                </div>
+
+                <div class="nearby-card__badges">
+                    <button type="button" class="nearby-card__btn-icon" aria-label="Comment">
+                        <i class="fa-solid fa-comment"></i>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="nearby-card__btn-icon nearby-card__btn-icon--map ${selectedPropertyId === String(propertyId) ? "is-active" : ""}"
+                        aria-label="Show on map"
+                        data-map-button
+                        data-property-id="${escapeHtml(propertyId)}"
+                    >
+                        <i class="fa-solid fa-location-dot"></i>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="nearby-card__btn-icon nearby-card__btn-icon--favorite ${isFavourite ? "is-active" : ""}"
+                        aria-label="${isFavourite ? "Remove from favourites" : "Add to favourites"}"
+                        aria-pressed="${isFavourite ? "true" : "false"}"
+                        data-favourite-button
+                        data-property-id="${escapeHtml(propertyId)}"
+                    >
+                        <i class="${isFavourite ? "fa-solid" : "fa-regular"} fa-heart"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="nearby-card__content">
+                <div class="nearby-card__content-body">
+                    <div class="nearby-card__meta">
+                        <span class="nearby-card__rating">
+                            <i class="fa-solid fa-star"></i>
+                            ${escapeHtml(reviewScore)} (${escapeHtml(reviews)} Reviews)
+                        </span>
+
+                        <span class="nearby-card__type">
+                            ${escapeHtml(propertyType)}
+                        </span>
+                    </div>
+
+                    <h3 class="nearby-card__title">
+                        ${escapeHtml(name)}
+                    </h3>
+
+                    <p class="nearby-card__features">
+                        ${escapeHtml(amenities)}
+                    </p>
+
+                    <p class="nearby-card__location">
+                        ${escapeHtml(location)}
+                    </p>
+                </div>
+
+                <div class="nearby-card__footer">
+                    <img
+                        src="${escapeHtml(providerLogo)}"
+                        alt="Provider logo"
+                        class="nearby-card__provider"
+                        loading="lazy"
+                    >
+
+                    <a
+                        href="${escapeHtml(partnerUrl)}"
+                        target="_blank"
+                        rel="noopener"
+                        class="btn btn--primary btn--small"
+                    >
+                        View Availability
+                    </a>
+                </div>
+            </div>
         </div>
-
-        <div class="nearby-card__badges">
-          <button type="button" class="nearby-card__btn-icon" aria-label="Comment">
-            <i class="fa-solid fa-comment"></i>
-          </button>
-
-          <button
-            type="button"
-            class="nearby-card__btn-icon nearby-card__btn-icon--map ${selectedPropertyId === String(propertyId) ? "is-active" : ""}"
-            aria-label="Show on map"
-            data-map-button
-            data-property-id="${escapeHtml(propertyId)}"
-            >           
-                <i class="fa-solid fa-location-dot"></i>
-            </button>
-
-          <button
-            type="button"
-            class="nearby-card__btn-icon nearby-card__btn-icon--favorite ${isFavourite ? "is-active" : ""}"
-            aria-label="${isFavourite ? "Remove from favourites" : "Add to favourites"}"
-            aria-pressed="${isFavourite ? "true" : "false"}"
-            data-favourite-button
-            data-property-id="${escapeHtml(propertyId)}"
-          >
-            <i class="${isFavourite ? "fa-solid" : "fa-regular"} fa-heart"></i>
-          </button>
-        </div>
-      </div>
-
-      <div class="nearby-card__content">
-        <div class="nearby-card__content-body">
-            <div class="nearby-card__meta">
-          <span class="nearby-card__rating">
-            <i class="fa-solid fa-star"></i>
-            ${escapeHtml(reviewScore)} (${escapeHtml(reviews)} Reviews)
-          </span>
-
-          <span class="nearby-card__type">
-            ${escapeHtml(propertyType)}
-          </span>
-        </div>
-
-        <h3 class="nearby-card__title">
-          ${escapeHtml(name)}
-        </h3>
-
-        <p class="nearby-card__features">
-          ${escapeHtml(amenities)}
-        </p>
-
-        <p class="nearby-card__location">
-          ${escapeHtml(location)}
-        </p>
-        </div>
-
-        <div class="nearby-card__footer">
-          <img
-            src="${escapeHtml(providerLogo)}"
-            alt="Provider logo"
-            class="nearby-card__provider"
-            loading="lazy"
-          >
-
-          <a
-            href="${escapeHtml(partnerUrl)}"
-            target="_blank"
-            rel="noopener"
-            class="btn btn--primary btn--small"
-          >
-            View Availability
-          </a>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-const PRICE_PER_NIGHT = 2026;
-
-const bookingDateInput = document.getElementById("bookingDateRange");
-const checkInField = document.getElementById("checkInField");
-const checkOutField = document.getElementById("checkOutField");
-const pricePerNightEl = document.getElementById("pricePerNight");
-const totalPriceEl = document.getElementById("totalPrice");
-
-function formatCurrency(amount) {
-    return `USD $${Number(amount).toLocaleString()}`;
-}
-
-function formatDisplayDate(date) {
-    return fecha.format(date, "MMM D");
-}
-
-function getTodayForDatepicker() {
-    return fecha.format(new Date(), "YYYY-MM-DD");
-}
-
-function parseDateRangeValue(value) {
-    if (!value || !value.includes(" - ")) {
-        return null;
-    }
-
-    const parts = value.split(" - ");
-
-    if (parts.length !== 2) {
-        return null;
-    }
-
-    const checkInDate = fecha.parse(parts[0], "YYYY-MM-DD");
-    const checkOutDate = fecha.parse(parts[1], "YYYY-MM-DD");
-
-    if (!checkInDate || !checkOutDate) {
-        return null;
-    }
-
-    return {
-        checkInDate,
-        checkOutDate
-    };
-}
-
-function getNightCount(checkInDate, checkOutDate) {
-    const oneDay = 1000 * 60 * 60 * 24;
-    const checkInStart = new Date(
-        checkInDate.getFullYear(),
-        checkInDate.getMonth(),
-        checkInDate.getDate()
-    );
-    const checkOutStart = new Date(
-        checkOutDate.getFullYear(),
-        checkOutDate.getMonth(),
-        checkOutDate.getDate()
-    );
-
-    return Math.round((checkOutStart - checkInStart) / oneDay);
-}
-
-function updateBookingPrice(nights = 0) {
-    if (pricePerNightEl) {
-        pricePerNightEl.textContent = formatCurrency(PRICE_PER_NIGHT);
-    }
-
-    if (totalPriceEl) {
-        totalPriceEl.textContent = formatCurrency(PRICE_PER_NIGHT * nights);
-    }
-}
-
-function updateBookingDatesFromInput() {
-    const range = parseDateRangeValue(bookingDateInput.value);
-
-    if (!range) {
-        updateBookingPrice(0);
-        return;
-    }
-
-    const nights = getNightCount(range.checkInDate, range.checkOutDate);
-
-    if (nights < 1) {
-        updateBookingPrice(0);
-        return;
-    }
-
-    checkInField.querySelector("span").textContent = formatDisplayDate(range.checkInDate);
-    checkOutField.querySelector("span").textContent = formatDisplayDate(range.checkOutDate);
-    updateBookingPrice(nights);
-}
-
-function initBookingDatepicker() {
-    if (
-        !bookingDateInput ||
-        !checkInField ||
-        !checkOutField ||
-        typeof HotelDatepicker === "undefined" ||
-        typeof fecha === "undefined"
-    ) {
-        return;
-    }
-
-    updateBookingPrice(0);
-
-    const datepicker = new HotelDatepicker(bookingDateInput, {
-        format: "YYYY-MM-DD",
-        startDate: getTodayForDatepicker(),
-        minNights: 1,
-        selectForward: true,
-        autoClose: false,
-        clearButton: true,
-        // submitButton: true,
-        topbarPosition: "bottom",
-        onSelectRange: function () {
-            updateBookingDatesFromInput();
-        }
-    });
-
-    checkInField.addEventListener("click", () => {
-        datepicker.open();
-    });
-
-    checkOutField.addEventListener("click", () => {
-        datepicker.open();
-    });
+    `;
 }
 
 async function loadNearbyCards(sortValue = "most-popular") {
@@ -447,10 +387,10 @@ async function loadNearbyCards(sortValue = "most-popular") {
 
         if (!Array.isArray(properties) || properties.length === 0) {
             nearbyGrid.innerHTML = `
-        <p class="nearby-loading">
-          No nearby properties found.
-        </p>
-      `;
+                <p class="nearby-loading">
+                    No nearby properties found.
+                </p>
+            `;
             return;
         }
 
@@ -464,14 +404,44 @@ async function loadNearbyCards(sortValue = "most-popular") {
         renderNearbyMarkers(properties);
     } catch (error) {
         nearbyGrid.innerHTML = `
-      <p class="nearby-loading">
-        Could not load nearby resorts. Please try again later.
-      </p>
-    `;
+            <p class="nearby-loading">
+                Could not load nearby resorts. Please try again later.
+            </p>
+        `;
 
         console.error(error);
     }
 }
+
+function handleNearbyCardSelection(event) {
+    const card = event.target.closest(".nearby-card");
+
+    if (!card || !nearbyGrid.contains(card)) return;
+
+    if (
+        event.target.closest("a") ||
+        event.target.closest("button")
+    ) {
+        return;
+    }
+
+    const propertyId = card.dataset.propertyId;
+
+    if (!propertyId) return;
+
+    selectNearbyProperty(propertyId);
+
+    const marker = nearbyMarkers.find((item) => item.propertyId === propertyId);
+
+    if (marker && nearbyMap) {
+        nearbyMap.panTo(marker.getPosition());
+    }
+}
+
+
+/* =========================================================
+   GOOGLE MAPS
+========================================================= */
 
 async function loadGoogleMapsApi() {
     try {
@@ -505,31 +475,20 @@ async function loadGoogleMapsApi() {
     }
 }
 
-const SITE_ACCENT_COLOR = "#ef7c00";
+function initNearbyMap() {
+    const mapEl = document.getElementById("nearbyMap");
 
-const DEFAULT_MAP_CENTER = {
-    lat: 39.8283,
-    lng: -98.5795
-};
+    if (!mapEl || typeof google === "undefined") return;
 
-let nearbyMap = null;
-let nearbyMarkers = [];
-let currentNearbyProperties = [];
-let selectedPropertyId = null;
+    nearbyMap = new google.maps.Map(mapEl, {
+        center: DEFAULT_MAP_CENTER,
+        zoom: 4,
+        mapTypeControl: true,
+        streetViewControl: false,
+        fullscreenControl: true
+    });
 
-function getPropertyId(item, index) {
-    return item?.ID || item?.Property?.PropertySlug || `property-${index}`;
-}
-
-function getPropertyPosition(item) {
-    const lat = Number(item?.GeoInfo?.Lat);
-    const lng = Number(item?.GeoInfo?.Lng);
-
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
-        return null;
-    }
-
-    return { lat, lng };
+    renderNearbyMarkers();
 }
 
 function clearNearbyMarkers() {
@@ -552,6 +511,7 @@ function getMarkerIcon(isSelected = false) {
                 stroke="${SITE_ACCENT_COLOR}"
                 stroke-width="3"
             />
+
             <circle
                 cx="21"
                 cy="20"
@@ -566,29 +526,6 @@ function getMarkerIcon(isSelected = false) {
         scaledSize: new google.maps.Size(42, 52),
         anchor: new google.maps.Point(21, 52)
     };
-}
-
-function selectNearbyProperty(propertyId) {
-    selectedPropertyId = String(propertyId);
-
-    document.querySelectorAll(".nearby-card").forEach((card) => {
-        const isSelected = card.dataset.propertyId === selectedPropertyId;
-
-        card.classList.toggle("is-selected", isSelected);
-
-        const mapButton = card.querySelector("[data-map-button]");
-
-        if (mapButton) {
-            mapButton.classList.toggle("is-active", isSelected);
-        }
-    });
-
-    nearbyMarkers.forEach((marker) => {
-        const isSelected = marker.propertyId === selectedPropertyId;
-
-        marker.setIcon(getMarkerIcon(isSelected));
-        marker.setZIndex(isSelected ? 999 : 1);
-    });
 }
 
 function renderNearbyMarkers(properties = currentNearbyProperties) {
@@ -644,24 +581,28 @@ function renderNearbyMarkers(properties = currentNearbyProperties) {
     }
 }
 
-function initNearbyMap() {
-    const mapEl = document.getElementById("nearbyMap");
+function selectNearbyProperty(propertyId) {
+    selectedPropertyId = String(propertyId);
 
-    if (!mapEl || typeof google === "undefined") return;
+    document.querySelectorAll(".nearby-card").forEach((card) => {
+        const isSelected = card.dataset.propertyId === selectedPropertyId;
 
-    nearbyMap = new google.maps.Map(mapEl, {
-        center: DEFAULT_MAP_CENTER,
-        zoom: 4,
-        mapTypeControl: true,
-        streetViewControl: false,
-        fullscreenControl: true
+        card.classList.toggle("is-selected", isSelected);
+
+        const mapButton = card.querySelector("[data-map-button]");
+
+        if (mapButton) {
+            mapButton.classList.toggle("is-active", isSelected);
+        }
     });
 
-    renderNearbyMarkers();
+    nearbyMarkers.forEach((marker) => {
+        const isSelected = marker.propertyId === selectedPropertyId;
+
+        marker.setIcon(getMarkerIcon(isSelected));
+        marker.setZIndex(isSelected ? 999 : 1);
+    });
 }
-
-window.initNearbyMap = initNearbyMap;
-
 
 function handleMapBadgeClick(event) {
     const button = event.target.closest("[data-map-button]");
@@ -680,72 +621,140 @@ function handleMapBadgeClick(event) {
 
     if (marker && nearbyMap) {
         nearbyMap.panTo(marker.getPosition());
-        // nearbyMap.setZoom(Math.max(nearbyMap.getZoom(), 10));
     }
 }
 
-function handleNearbyCardSelection(event) {
-    const card = event.target.closest(".nearby-card");
+window.initNearbyMap = initNearbyMap;
 
-    if (!card || !nearbyGrid.contains(card)) return;
 
+/* =========================================================
+   BOOKING DATEPICKER
+========================================================= */
+
+function formatCurrency(amount) {
+    return `USD $${Number(amount).toLocaleString()}`;
+}
+
+function formatDisplayDate(date) {
+    return fecha.format(date, "MMM D");
+}
+
+function getTodayForDatepicker() {
+    return fecha.format(new Date(), "YYYY-MM-DD");
+}
+
+function parseDateRangeValue(value) {
+    if (!value || !value.includes(" - ")) {
+        return null;
+    }
+
+    const parts = value.split(" - ");
+
+    if (parts.length !== 2) {
+        return null;
+    }
+
+    const checkInDate = fecha.parse(parts[0], "YYYY-MM-DD");
+    const checkOutDate = fecha.parse(parts[1], "YYYY-MM-DD");
+
+    if (!checkInDate || !checkOutDate) {
+        return null;
+    }
+
+    return {
+        checkInDate,
+        checkOutDate
+    };
+}
+
+function getNightCount(checkInDate, checkOutDate) {
+    const oneDay = 1000 * 60 * 60 * 24;
+
+    const checkInStart = new Date(
+        checkInDate.getFullYear(),
+        checkInDate.getMonth(),
+        checkInDate.getDate()
+    );
+
+    const checkOutStart = new Date(
+        checkOutDate.getFullYear(),
+        checkOutDate.getMonth(),
+        checkOutDate.getDate()
+    );
+
+    return Math.round((checkOutStart - checkInStart) / oneDay);
+}
+
+function updateBookingPrice(nights = 0) {
+    if (pricePerNightEl) {
+        pricePerNightEl.textContent = formatCurrency(PRICE_PER_NIGHT);
+    }
+
+    if (totalPriceEl) {
+        totalPriceEl.textContent = formatCurrency(PRICE_PER_NIGHT * nights);
+    }
+}
+
+function updateBookingDatesFromInput() {
+    const range = parseDateRangeValue(bookingDateInput.value);
+
+    if (!range) {
+        updateBookingPrice(0);
+        return;
+    }
+
+    const nights = getNightCount(range.checkInDate, range.checkOutDate);
+
+    if (nights < 1) {
+        updateBookingPrice(0);
+        return;
+    }
+
+    checkInField.querySelector("span").textContent = formatDisplayDate(range.checkInDate);
+    checkOutField.querySelector("span").textContent = formatDisplayDate(range.checkOutDate);
+
+    updateBookingPrice(nights);
+}
+
+function initBookingDatepicker() {
     if (
-        event.target.closest("a") ||
-        event.target.closest("button")
+        !bookingDateInput ||
+        !checkInField ||
+        !checkOutField ||
+        typeof HotelDatepicker === "undefined" ||
+        typeof fecha === "undefined"
     ) {
         return;
     }
 
-    const propertyId = card.dataset.propertyId;
+    updateBookingPrice(0);
 
-    if (!propertyId) return;
+    const datepicker = new HotelDatepicker(bookingDateInput, {
+        format: "YYYY-MM-DD",
+        startDate: getTodayForDatepicker(),
+        minNights: 1,
+        selectForward: true,
+        autoClose: false,
+        clearButton: true,
+        topbarPosition: "bottom",
+        onSelectRange: function () {
+            updateBookingDatesFromInput();
+        }
+    });
 
-    selectNearbyProperty(propertyId);
+    checkInField.addEventListener("click", () => {
+        datepicker.open();
+    });
 
-    const marker = nearbyMarkers.find((item) => item.propertyId === propertyId);
-
-    if (marker && nearbyMap) {
-        nearbyMap.panTo(marker.getPosition());
-        // nearbyMap.setZoom(Math.max(nearbyMap.getZoom(), 10));
-    }
-}
-
-function handleExpandableClick(event) {
-    const button = event.target.closest(".expandable-toggle");
-
-    if (!button) return;
-
-    const section = button.closest(".expandable-section");
-
-    if (!section) return;
-
-    const isExpanded = section.classList.toggle("is-expanded");
-
-    button.textContent = isExpanded ? "Show less" : "Show more";
-    button.setAttribute("aria-expanded", isExpanded ? "true" : "false");
-}
-
-function initExpandableSections() {
-    document.addEventListener("click", handleExpandableClick);
-}
-
-function initNearbyCardActions() {
-    if (!nearbyGrid) return;
-
-    nearbyGrid.addEventListener("click", handleFavouriteClick);
-    nearbyGrid.addEventListener("click", handleMapBadgeClick);
-    nearbyGrid.addEventListener("click", handleNearbyCardSelection);
-}
-
-function initNearbySorting() {
-    if (!nearbySort) return;
-
-    nearbySort.value = "most-popular";
-
-    nearbySort.addEventListener("change", () => {
-        loadNearbyCards(nearbySort.value);
+    checkOutField.addEventListener("click", () => {
+        datepicker.open();
     });
 }
+
+
+/* =========================================================
+   GALLERY MODAL
+========================================================= */
 
 function getImageFileExtension(imagePath = "") {
     const cleanPath = imagePath.split("?")[0];
@@ -785,7 +794,11 @@ function renderGalleryImages(images) {
 
             return `
                 <div class="gallery-slide" data-gallery-index="${index}">
-                    <img src="${escapeHtml(imageUrl)}" alt="Property image ${index + 1}" loading="lazy">
+                    <img
+                        src="${escapeHtml(imageUrl)}"
+                        alt="Property image ${index + 1}"
+                        loading="lazy"
+                    >
                 </div>
             `;
         })
@@ -849,7 +862,9 @@ function showNextGalleryImage() {
     if (galleryImages.length === 0) return;
 
     const nextIndex =
-        activeGalleryIndex >= galleryImages.length - 1 ? 0 : activeGalleryIndex + 1;
+        activeGalleryIndex >= galleryImages.length - 1
+            ? 0
+            : activeGalleryIndex + 1;
 
     scrollToGalleryImage(nextIndex);
 }
@@ -858,7 +873,9 @@ function showPreviousGalleryImage() {
     if (galleryImages.length === 0) return;
 
     const previousIndex =
-        activeGalleryIndex <= 0 ? galleryImages.length - 1 : activeGalleryIndex - 1;
+        activeGalleryIndex <= 0
+            ? galleryImages.length - 1
+            : activeGalleryIndex - 1;
 
     scrollToGalleryImage(previousIndex);
 }
@@ -871,6 +888,7 @@ function updateGalleryIndexFromScroll() {
     if (!slideWidth) return;
 
     activeGalleryIndex = Math.round(galleryTrack.scrollLeft / slideWidth);
+
     updateGalleryCounter();
 }
 
@@ -903,44 +921,102 @@ async function handleOpenGallery() {
     }
 }
 
+function handleGalleryModalClick(event) {
+    if (event.target.closest("[data-gallery-close]")) {
+        closeGalleryModal();
+    }
+}
+
+function handleGalleryKeydown(event) {
+    if (!galleryModal.classList.contains("is-open")) return;
+
+    if (event.key === "Escape") {
+        closeGalleryModal();
+    }
+
+    if (event.key === "ArrowRight") {
+        showNextGalleryImage();
+    }
+
+    if (event.key === "ArrowLeft") {
+        showPreviousGalleryImage();
+    }
+}
+
+function handleGalleryScroll() {
+    window.clearTimeout(galleryTrack.scrollTimer);
+
+    galleryTrack.scrollTimer = window.setTimeout(() => {
+        updateGalleryIndexFromScroll();
+    }, 80);
+}
+
+
+/* =========================================================
+   EXPANDABLE SECTIONS
+========================================================= */
+
+function handleExpandableClick(event) {
+    const button = event.target.closest(".expandable-toggle");
+
+    if (!button) return;
+
+    const section = button.closest(".expandable-section");
+
+    if (!section) return;
+
+    const isExpanded = section.classList.toggle("is-expanded");
+
+    button.textContent = isExpanded ? "Show less" : "Show more";
+    button.setAttribute("aria-expanded", isExpanded ? "true" : "false");
+}
+
+function initExpandableSections() {
+    document.addEventListener("click", handleExpandableClick);
+}
+
+
+/* =========================================================
+   INITIALIZERS
+========================================================= */
+
+function initNearbyCardActions() {
+    if (!nearbyGrid) return;
+
+    nearbyGrid.addEventListener("click", handleFavouriteClick);
+    nearbyGrid.addEventListener("click", handleMapBadgeClick);
+    nearbyGrid.addEventListener("click", handleNearbyCardSelection);
+}
+
+function initNearbySorting() {
+    if (!nearbySort) return;
+
+    nearbySort.value = "most-popular";
+
+    nearbySort.addEventListener("change", () => {
+        loadNearbyCards(nearbySort.value);
+    });
+}
+
 function initGalleryModal() {
     if (!openGalleryBtn || !galleryModal || !galleryTrack) return;
 
     openGalleryBtn.addEventListener("click", handleOpenGallery);
 
-    galleryModal.addEventListener("click", (event) => {
-        if (event.target.closest("[data-gallery-close]")) {
-            closeGalleryModal();
-        }
-    });
+    galleryModal.addEventListener("click", handleGalleryModalClick);
 
     galleryPrevBtn?.addEventListener("click", showPreviousGalleryImage);
     galleryNextBtn?.addEventListener("click", showNextGalleryImage);
 
-    galleryTrack.addEventListener("scroll", () => {
-        window.clearTimeout(galleryTrack.scrollTimer);
+    galleryTrack.addEventListener("scroll", handleGalleryScroll);
 
-        galleryTrack.scrollTimer = window.setTimeout(() => {
-            updateGalleryIndexFromScroll();
-        }, 80);
-    });
-
-    document.addEventListener("keydown", (event) => {
-        if (!galleryModal.classList.contains("is-open")) return;
-
-        if (event.key === "Escape") {
-            closeGalleryModal();
-        }
-
-        if (event.key === "ArrowRight") {
-            showNextGalleryImage();
-        }
-
-        if (event.key === "ArrowLeft") {
-            showPreviousGalleryImage();
-        }
-    });
+    document.addEventListener("keydown", handleGalleryKeydown);
 }
+
+
+/* =========================================================
+   APP BOOTSTRAP
+========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
     initNearbySorting();
@@ -948,6 +1024,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initExpandableSections();
     initBookingDatepicker();
     initGalleryModal();
+
     loadNearbyCards("most-popular");
     loadGoogleMapsApi();
 });

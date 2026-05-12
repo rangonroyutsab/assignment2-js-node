@@ -1289,7 +1289,7 @@ select {
 @media (max-width: 768px) {
   .contact-banner {
     flex-direction: column;
-    text-align: flex-start;
+    text-align: left;
     border-radius: 0;
     padding: 30px 20px;
     align-items: center;

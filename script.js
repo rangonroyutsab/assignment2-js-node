@@ -18,6 +18,9 @@ const galleryCounter = document.getElementById("galleryCounter");
 const galleryPrevBtn = document.getElementById("galleryPrevBtn");
 const galleryNextBtn = document.getElementById("galleryNextBtn");
 
+const amenitiesList = document.querySelector(".amenities-list");
+const amenitiesToggle = document.getElementById("amenitiesToggle");
+
 
 /* =========================================================
    CONFIG
@@ -101,6 +104,14 @@ function createSkeletonCards(count = getPlatformLimit()) {
     ).join("");
 }
 
+if (amenitiesList && amenitiesToggle) {
+    amenitiesToggle.addEventListener("click", () => {
+        const isExpanded = amenitiesList.classList.toggle("is-expanded");
+
+        amenitiesToggle.textContent = isExpanded ? "Show less" : "Show more";
+        amenitiesToggle.setAttribute("aria-expanded", isExpanded ? "true" : "false");
+    });
+}
 
 /* =========================================================
    PROPERTY DATA HELPERS

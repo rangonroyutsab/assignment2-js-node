@@ -507,10 +507,6 @@ select {
   min-width: 0;
 }
 
-.btn {
-  touch-action: manipulation;
-}
-
 
 /* Tablet responsive styles */
 @media (max-width: 1024px) {
@@ -537,7 +533,7 @@ select {
   display: grid;
   grid-template-columns: 2fr 1fr;
   height: 500px;
-  gap: 8px;
+  gap: 4px;
   border-radius: var(--radius-lg);
   overflow: hidden;
   margin-bottom: var(--space-lg);
@@ -552,7 +548,7 @@ select {
   display: grid;
   grid-template-rows: repeat(2, 1fr);
   grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
+  gap: 4px;
   height: 100%;
 }
 
@@ -1878,18 +1874,15 @@ details[open] .faq-icon::before {
   gap: 16px;
 }
 
+
 .nearby-card {
-  /* height: 380px; */
-  aspect-ratio: 4/5;
   background: var(--color-bg);
   border-radius: var(--radius-md);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  /* justify-content: space-between; */
+  min-height: 380px;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.04);
-
-
 }
 
 .nearby-card.is-selected {
@@ -1899,12 +1892,10 @@ details[open] .faq-icon::before {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-
 .nearby-card__img-wrapper {
   position: relative;
-  /* aspect-ratio: 16/10; */
-  /* aspect-ratio: 4/3; */
-  height: 50%;
+  height: 190px;
+  flex-shrink: 0;
 }
 
 .nearby-card__img {
@@ -1988,8 +1979,9 @@ details[open] .faq-icon::before {
 .nearby-card__meta {
   display: flex;
   justify-content: space-between;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: #555;
+  gap: var(--space-sm);
 }
 
 .nearby-card__rating {
@@ -2014,7 +2006,7 @@ details[open] .faq-icon::before {
 
 .nearby-card__features {
   font-size: 0.75rem;
-  color: #777;
+  color: #555;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -2031,10 +2023,11 @@ details[open] .faq-icon::before {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: var(--space-sm);
 }
 
 .nearby-card__provider {
-  height: 18px;
+  height: 16px;
   max-width: 90px;
   object-fit: contain;
 }
@@ -2080,7 +2073,7 @@ details[open] .faq-icon::before {
   appearance: none;
   -webkit-appearance: none;
   border-radius: var(--radius-xl);
-  background-image: url("assets/icons/arrow-down-large.png");
+  background-image: url("assets/icons/arrow-down.svg");
   background-repeat: no-repeat;
   background-position: right 16px center;
   background-size: 12px;
@@ -2101,10 +2094,9 @@ details[open] .faq-icon::before {
 .map-sidebar {
   position: sticky;
   top: 100px;
-  height: 833px;
+  height: 100%;
   border-radius: var(--radius-md);
   overflow: hidden;
-  /* border: 1px solid #eef2f5; */
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.04);
 }
 
@@ -2147,13 +2139,20 @@ details[open] .faq-icon::before {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .nearby-card {
+    min-height: auto;
+  }
+
+  .nearby-card__img-wrapper {
+    height: 220px;
+  }
+
   .map-sidebar {
     /* position: static; */
     /* height: 420px; */
     display: none;
   }
 }
-
 
 /* Mobile responsive styles */
 @media (max-width: 768px) {
@@ -2220,8 +2219,7 @@ details[open] .faq-icon::before {
 
   .nearby-card__footer {
     gap: 10px;
-    flex-direction: column;
-    align-items: flex-start;
+    justify-content: space-between;
   }
 
   .map-sidebar {
@@ -2347,13 +2345,23 @@ details[open] .faq-icon::before {
   margin-top: -8px;
 }
 
+.btn {
+  touch-action: manipulation;
+  max-width: 100%;
+  text-align: center;
+  text-decoration: none;
+  white-space: normal;
+}
+
 .btn--primary {
   background: #ef7c00;
   color: #ffffff;
   border-radius: 50px;
   padding: var(--space-md) var(--space-lg);
-  font-size: 1.05rem;
+  font-size: clamp(0.95rem, 2vw, 1.05rem);
   font-weight: 600;
+  line-height: 1.2;
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2362,14 +2370,14 @@ details[open] .faq-icon::before {
   transition: background 0.2s ease;
 }
 
-.btn--small {
-  padding: 8px 16px;
-  font-size: 0.85rem;
-}
-
-
 .btn--primary:hover {
   background: #df7300;
+}
+
+.btn--small {
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  min-height: 36px;
 }
 
 .btn--full {

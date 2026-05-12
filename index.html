@@ -103,9 +103,10 @@
                 <img
                   src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
                   alt="Resort main view" class="hero__img">
-                <span class="hero__badge">
-                  <i class="fa-solid fa-camera"></i> View all images (180)
-                </span>
+                <button type="button" class="hero__badge" id="openGalleryBtn">
+                  <i class="fa-solid fa-camera"></i>
+                  <span>View all images</span>
+                </button>
               </div>
               <div class="hero__gallery-grid">
                 <img
@@ -1083,6 +1084,35 @@
 
     </div>
   </footer>
+
+
+  <!-- Gallery Modal -->
+   <div class="gallery-modal" id="galleryModal" aria-hidden="true">
+  <div class="gallery-modal__overlay" data-gallery-close></div>
+
+  <div class="gallery-modal__dialog" role="dialog" aria-modal="true" aria-label="Property image gallery">
+    <button type="button" class="gallery-modal__close" aria-label="Close gallery" data-gallery-close>
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div class="gallery-modal__header">
+      <h2 class="gallery-modal__title">Property Images</h2>
+      <p class="gallery-modal__counter" id="galleryCounter">1 / 1</p>
+    </div>
+
+    <button type="button" class="gallery-modal__arrow gallery-modal__arrow--prev" id="galleryPrevBtn" aria-label="Previous image">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+
+    <div class="gallery-modal__body">
+      <div class="gallery-track" id="galleryTrack"></div>
+    </div>
+
+    <button type="button" class="gallery-modal__arrow gallery-modal__arrow--next" id="galleryNextBtn" aria-label="Next image">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+  </div>
+</div>
 
 
   <script src="https://cdn.jsdelivr.net/npm/fecha@4.2.3/lib/fecha.umd.min.js"></script>

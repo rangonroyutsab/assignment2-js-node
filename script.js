@@ -11,6 +11,16 @@ const sortApiMap = {
     "lowest-price": "lowest-price=true"
 };
 
+const openGalleryBtn = document.getElementById("openGalleryBtn");
+const galleryModal = document.getElementById("galleryModal");
+const galleryTrack = document.getElementById("galleryTrack");
+const galleryCounter = document.getElementById("galleryCounter");
+const galleryPrevBtn = document.getElementById("galleryPrevBtn");
+const galleryNextBtn = document.getElementById("galleryNextBtn");
+
+let galleryImages = [];
+let activeGalleryIndex = 0;
+
 function getPlatformLimit() {
     return window.matchMedia("(max-width: 768px)").matches ? 4 : 6;
 }
@@ -737,11 +747,207 @@ function initNearbySorting() {
     });
 }
 
+function getImageFileExtension(imagePath = "") {
+    const cleanPath = imagePath.split("?")[0];
+    const extension = cleanPath.split(".").pop();
+
+    return extension || "";
+}
+
+function buildGalleryImageUrl(imagePath) {
+    if (!imagePath) return "";
+
+    if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+        return imagePath;
+    }
+
+    return imagePath;
+}
+
+function updateGalleryCounter() {
+    if (!galleryCounter) return;
+
+    const total = galleryImages.length;
+    const current = total ? activeGalleryIndex + 1 : 0;
+
+    galleryCounter.textContent = `${current} / ${total}`;
+}
+
+function renderGalleryImages(images) {
+    if (!galleryTrack) return;
+
+    galleryImages = images;
+    activeGalleryIndex = 0;
+
+    galleryTrack.innerHTML = images
+        .map((image, index) => {
+            const imageUrl = buildGalleryImageUrl(image);
+
+            return `
+                <div class="gallery-slide" data-gallery-index="${index}">
+                    <img src="${escapeHtml(imageUrl)}" alt="Property image ${index + 1}" loading="lazy">
+                </div>
+            `;
+        })
+        .join("");
+
+    updateGalleryCounter();
+}
+
+async function fetchGalleryImages() {
+    const response = await fetch("/images");
+
+    if (!response.ok) {
+        throw new Error("Could not fetch gallery images");
+    }
+
+    const images = await response.json();
+
+    if (!Array.isArray(images)) {
+        return [];
+    }
+
+    return images.filter(Boolean);
+}
+
+function openGalleryModal() {
+    if (!galleryModal) return;
+
+    galleryModal.classList.add("is-open");
+    galleryModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("gallery-open");
+}
+
+function closeGalleryModal() {
+    if (!galleryModal) return;
+
+    galleryModal.classList.remove("is-open");
+    galleryModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("gallery-open");
+}
+
+function scrollToGalleryImage(index) {
+    if (!galleryTrack || galleryImages.length === 0) return;
+
+    const safeIndex = Math.max(0, Math.min(index, galleryImages.length - 1));
+    const slide = galleryTrack.querySelector(`[data-gallery-index="${safeIndex}"]`);
+
+    if (!slide) return;
+
+    activeGalleryIndex = safeIndex;
+
+    slide.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "start"
+    });
+
+    updateGalleryCounter();
+}
+
+function showNextGalleryImage() {
+    if (galleryImages.length === 0) return;
+
+    const nextIndex =
+        activeGalleryIndex >= galleryImages.length - 1 ? 0 : activeGalleryIndex + 1;
+
+    scrollToGalleryImage(nextIndex);
+}
+
+function showPreviousGalleryImage() {
+    if (galleryImages.length === 0) return;
+
+    const previousIndex =
+        activeGalleryIndex <= 0 ? galleryImages.length - 1 : activeGalleryIndex - 1;
+
+    scrollToGalleryImage(previousIndex);
+}
+
+function updateGalleryIndexFromScroll() {
+    if (!galleryTrack || galleryImages.length === 0) return;
+
+    const slideWidth = galleryTrack.clientWidth;
+
+    if (!slideWidth) return;
+
+    activeGalleryIndex = Math.round(galleryTrack.scrollLeft / slideWidth);
+    updateGalleryCounter();
+}
+
+async function handleOpenGallery() {
+    openGalleryModal();
+
+    if (galleryTrack && galleryImages.length === 0) {
+        galleryTrack.innerHTML = createSkeletonCards(4);
+    }
+
+    try {
+        const images = await fetchGalleryImages();
+
+        if (images.length === 0) {
+            galleryTrack.innerHTML = `
+                <p class="nearby-loading">No property images found.</p>
+            `;
+            return;
+        }
+
+        renderGalleryImages(images);
+    } catch (error) {
+        if (galleryTrack) {
+            galleryTrack.innerHTML = `
+                <p class="nearby-loading">Could not load property images.</p>
+            `;
+        }
+
+        console.error(error);
+    }
+}
+
+function initGalleryModal() {
+    if (!openGalleryBtn || !galleryModal || !galleryTrack) return;
+
+    openGalleryBtn.addEventListener("click", handleOpenGallery);
+
+    galleryModal.addEventListener("click", (event) => {
+        if (event.target.closest("[data-gallery-close]")) {
+            closeGalleryModal();
+        }
+    });
+
+    galleryPrevBtn?.addEventListener("click", showPreviousGalleryImage);
+    galleryNextBtn?.addEventListener("click", showNextGalleryImage);
+
+    galleryTrack.addEventListener("scroll", () => {
+        window.clearTimeout(galleryTrack.scrollTimer);
+
+        galleryTrack.scrollTimer = window.setTimeout(() => {
+            updateGalleryIndexFromScroll();
+        }, 80);
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (!galleryModal.classList.contains("is-open")) return;
+
+        if (event.key === "Escape") {
+            closeGalleryModal();
+        }
+
+        if (event.key === "ArrowRight") {
+            showNextGalleryImage();
+        }
+
+        if (event.key === "ArrowLeft") {
+            showPreviousGalleryImage();
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     initNearbySorting();
     initNearbyCardActions();
     initExpandableSections();
     initBookingDatepicker();
+    initGalleryModal();
     loadNearbyCards("most-popular");
     loadGoogleMapsApi();
 });

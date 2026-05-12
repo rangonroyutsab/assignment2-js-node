@@ -51,6 +51,7 @@ let selectedPropertyId = null;
 
 let galleryImages = [];
 let activeGalleryIndex = 0;
+let galleryPageScrollY = 0;
 
 
 /* =========================================================
@@ -823,20 +824,42 @@ async function fetchGalleryImages() {
     return images.filter(Boolean);
 }
 
+
+
+function lockGalleryPageScroll() {
+    galleryPageScrollY = window.scrollY || document.documentElement.scrollTop;
+
+    document.documentElement.classList.add("gallery-open");
+    document.body.classList.add("gallery-open");
+
+    document.body.style.top = `-${galleryPageScrollY}px`;
+}
+
+function unlockGalleryPageScroll() {
+    document.documentElement.classList.remove("gallery-open");
+    document.body.classList.remove("gallery-open");
+
+    document.body.style.top = "";
+
+    window.scrollTo(0, galleryPageScrollY);
+}
+
 function openGalleryModal() {
     if (!galleryModal) return;
 
+    galleryModal.hidden = false;
     galleryModal.classList.add("is-open");
-    galleryModal.setAttribute("aria-hidden", "false");
-    document.body.classList.add("gallery-open");
+
+    lockGalleryPageScroll();
 }
 
 function closeGalleryModal() {
     if (!galleryModal) return;
 
     galleryModal.classList.remove("is-open");
-    galleryModal.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("gallery-open");
+    galleryModal.hidden = true;
+
+    unlockGalleryPageScroll();
 }
 
 function scrollToGalleryImage(index) {

@@ -22,8 +22,11 @@
         <button type="button" class="header-btn circle" aria-label="More options">
           <i class="fa-solid fa-ellipsis"></i>
         </button>
-        <a href="#" class="white-text">Destination</a>
-        <a href="#" class="white-text">Groups &amp; Weddings</a>
+        <a href="#" class="white-text destinations" id="destinationsTrigger">
+          <span>Destinations</span>
+          <img class="site-header-item__arrowdown" src="assets/icons/arrow-down-white.svg" alt="down-arrow" aria-hidden="true">
+        </a>
+        <a href="#" class="white-text groups-weddings">Groups &amp; Weddings</a>
       </div>
 
       <div class="site-header-item center">
@@ -439,13 +442,10 @@
           <section class="contact-banner" aria-label="Contact a booking specialist 1">
             <div class="contact-banner__content">
               <h2 class="contact-banner__title">
-                Would You Like To Speak With<br>An All-Inclusive Resort
-                Booking Specialist?
+                Would You Like To Speak With An All-Inclusive Resort Specialist?
               </h2>
               <p class="contact-banner__text">
-                Our dedicated team of booking experts is standing by to answer
-                questions and provide customized assistance through the
-                booking process.
+                Our dedicated team of booking experts is standing by to answer questions and provide customized assistance through the booking process.
               </p>
             </div>
             <div class="contact-banner__action">
@@ -557,7 +557,7 @@
               </div>
             </div>
 
-            <div class="text-right">
+            <div class="all-activities-link">
               <button type="button" class="link-show-more">See All Activities</button>
             </div>
           </section>
@@ -955,9 +955,10 @@
       <!-- Contact Banner Section 2 -->
       <section class="contact-banner" aria-label="Contact a booking specialist 2">
         <div class="contact-banner__content">
-          <h2 class="contact-banner__title">
-            Questions?<br>Contact An All-Inclusive Booking Specialist
-          </h2>
+          <div class="contact-banner__title">
+            <p>Questions?</p>
+            <p>Contact An All-inclusive Booking Specialist</p>
+          </div>
           <p class="contact-banner__text">
             Our dedicated team of booking experts is standing by to answer questions and provide customized assistance
             through the all-inclusive booking process
@@ -1089,7 +1090,7 @@
 
 
   <!-- Gallery Modal -->
-  <div class="gallery-modal" id="galleryModal" aria-hidden="true">
+  <div class="gallery-modal" id="galleryModal" hidden>
     <div class="gallery-modal__overlay" data-gallery-close></div>
 
     <div class="gallery-modal__dialog" role="dialog" aria-modal="true" aria-label="Property image gallery">
